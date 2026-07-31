@@ -2,32 +2,43 @@ const User = require("../models/User");
 const Subscription = require("../models/MembershipSubscription");
 const Payments = require("../models/Payments");
 const { default: mongoose } = require("mongoose");
-
+const MembershipPlan = require("../models/MembershipPlan");
 // Create the payement
+
 const createPayment = async (req, res) => {
   try {
-    const { userId, subscriptionId, amount, paymentMethod } = req.body;
+    const { userId, subscriptionId, membershipPlanId, amount, paymentMethod } =
+      req.body;
 
-    if (!userId || !subscriptionId || amount === undefined || !paymentMethod) {
+    // Check required fields
+    if (
+      !userId ||
+      !subscriptionId ||
+      !membershipPlanId ||
+      amount === undefined ||
+      !paymentMethod
+    ) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
 
-    // Validate the Object ID
+    // Validate ObjectIds
     if (
       !mongoose.Types.ObjectId.isValid(userId) ||
-      !mongoose.Types.ObjectId.isValid(subscriptionId)
+      !mongoose.Types.ObjectId.isValid(subscriptionId) ||
+      !mongoose.Types.ObjectId.isValid(membershipPlanId)
     ) {
       return res.status(400).json({
         success: false,
-        message: "Invalid User ID or Subscription ID",
+        message: "Invalid ID format",
       });
     }
 
-    // find the user
+    // Check user exists
     const user = await User.findById(userId);
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -35,9 +46,9 @@ const createPayment = async (req, res) => {
       });
     }
 
-    // find the subscription
-
+    // Check subscription exists
     const subscription = await Subscription.findById(subscriptionId);
+
     if (!subscription) {
       return res.status(404).json({
         success: false,
@@ -45,7 +56,25 @@ const createPayment = async (req, res) => {
       });
     }
 
-    // find payment exits
+    // Check membership plan exists
+    const plan = await MembershipPlan.findById(membershipPlanId);
+
+    if (!plan) {
+      return res.status(404).json({
+        success: false,
+        message: "Membership plan not found",
+      });
+    }
+
+    // Validate amount
+    if (amount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount must be greater than zero",
+      });
+    }
+
+    // Prevent duplicate payment
     const existingPayment = await Payments.findOne({
       subscriptionId,
     });
@@ -57,41 +86,39 @@ const createPayment = async (req, res) => {
       });
     }
 
-    // find amount  greater rhan zero or not
-
-    if (amount <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Amount must be greater than 0",
-      });
-    }
-
-    // /create the payment
-
+    // Create payment
     const payment = await Payments.create({
       userId,
+
       subscriptionId,
-      membershipPlanId: subscription.membershipPlanId,
+
+      membershipPlanId,
+
       amount,
+
       paymentMethod,
+
       status: "Pending",
     });
 
-    // return successfull res
-
     return res.status(201).json({
       success: true,
-      message: "payment created successfully",
+
+      message: "Payment created successfully",
+
       payment,
     });
   } catch (error) {
-    console.log("Error while creating payement", error);
+    console.log("Create Payment Error:", error);
+
     return res.status(500).json({
       success: false,
+
       message: "Internal server error",
     });
   }
 };
+
 
 // getAllPayments
 
@@ -186,7 +213,7 @@ const updatePaymentById = async (req, res) => {
     // Find the payment
 
     const payment = await Payments.findById(req.params.id);
-   
+
     if (!payment) {
       return res.status(404).json({
         success: false,

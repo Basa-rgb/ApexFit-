@@ -1,6 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config();
+
+
 const connectedDb = require("./config/db");
 const cors = require("cors");
 
@@ -14,6 +16,9 @@ const bookingRoutes = require("./Routes/bookingRoutes");
 const workoutPlanRoutes  = require("./Routes/workoutRoutes");
 const dietRoutes = require("./Routes/dietRoutes")
 const contactRoutes = require("./Routes/contactRoutes");
+
+// Esewa Routes
+const esewaRoutes = require("./Routes/esewaRoutes");
 
 // Admin
 const adminRoutes = require("./Routes/adminRoutes");
@@ -66,6 +71,11 @@ app.use("/api/contacts", contactRoutes);
 // admin routes
 
 app.use("/api/admin", adminRoutes);
+
+// Esewa routes
+
+app.use("/api/esewa", esewaRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 

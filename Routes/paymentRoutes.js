@@ -11,7 +11,7 @@ const {
 } = require("../controllers/PaymentController");
 
 // Create Payment
-router.post("/", createPayment);
+router.post("/", protect, createPayment);
 
 // Get All Payments
 router.get("/",protect, getAllPayments);

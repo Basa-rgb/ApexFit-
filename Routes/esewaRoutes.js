@@ -1,17 +1,32 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 const {
-initiateEsewaPayment,
-  esewaSuccess,
-  esewaFailure,
+  EsewaInitiatePayment,
+  paymentStatus,
 } = require("../controllers/esewaController");
 
-router.post("/initiate", initiateEsewaPayment);
+const attachUserIfToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next();
+  }
 
-router.get("/success", esewaSuccess);
+  try {
+    req.user = jwt.verify(authHeader.split(" ")[1], process.env.JWT_SECRET);
+    return next();
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired token.",
+    });
+  }
+};
 
-router.get("/failure", esewaFailure);
+// Routes
+router.post("/initiate-payment", attachUserIfToken, EsewaInitiatePayment);
+router.post("/payment-status", paymentStatus);
 
 module.exports = router;

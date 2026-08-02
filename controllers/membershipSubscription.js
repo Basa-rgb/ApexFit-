@@ -7,7 +7,8 @@ const MembershipSubscription = require("../models/MembershipSubscription");
 
 const createMembershipSubscription = async (req, res) => {
   try {
-    const { userId, membershipPlanId } = req.body;
+    const { membershipPlanId } = req.body;
+    const userId = req.user?.id || req.body.userId;
 
     // validate the required fields
     if (!userId || !membershipPlanId) {
@@ -71,7 +72,7 @@ const createMembershipSubscription = async (req, res) => {
       membershipPlanId: membershipPlanId,
       startDate: startDate,
       endDate: endDate,
-      status: "Active",
+      status: "Pending",
     });
 
     // Save the new subscription to the database
@@ -202,7 +203,7 @@ const updateMembershipSubscription = async (req, res) => {
       });
     }
 
-    if (!["Active", "Expired", "Cancelled"].includes(status)) {
+    if (!["Pending", "Active", "Expired", "Cancelled"].includes(status)) {
       return res.status(400).json({
         success: false,
         message: "Invalid status.",

@@ -7,8 +7,9 @@ const MembershipPlan = require("../models/MembershipPlan");
 
 const createPayment = async (req, res) => {
   try {
-    const { userId, subscriptionId, membershipPlanId, amount, paymentMethod } =
+    const { subscriptionId, membershipPlanId, amount, paymentMethod } =
       req.body;
+    const userId = req.user?.id || req.body.userId;
 
     // Check required fields
     if (
@@ -74,6 +75,13 @@ const createPayment = async (req, res) => {
       });
     }
 
+    if (Number(amount) !== plan.price) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount must match the selected membership plan price",
+      });
+    }
+
     // Prevent duplicate payment
     const existingPayment = await Payments.findOne({
       subscriptionId,
@@ -126,7 +134,7 @@ const getAllPayments = async (req, res) => {
   try {
     // find payment and populate it
     const payments = await Payments.find()
-      .populate("userId", "fullName email")
+      .populate("userId", "name email")
       .populate("subscriptionId", "startDate endDate status");
 
     // find payment exits or not
@@ -169,7 +177,7 @@ const getPaymentsById = async (req, res) => {
 
     // find by Id and populate it
     const payment = await Payments.findById(req.params.id)
-      .populate("userId", "fullName email")
+      .populate("userId", "name email")
       .populate("subscriptionId", "startDate endDate status");
 
     // find payment exits or not

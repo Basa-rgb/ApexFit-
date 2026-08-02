@@ -1,203 +1,362 @@
-// =======================================================
-// eSewa Controller
-// Handles payment initiation, success and failure callbacks
-// =======================================================
-
-const {
-  generateSignature,
-  verifyPayment,
-} = require("../services/esewaService");
-
-const { v4: uuidv4 } = require("uuid");
-
+const crypto = require("crypto");
+const mongoose = require("mongoose");
+const { EsewaPaymentGateway, EsewaCheckStatus } = require("esewajs");
+const Transaction = require("../models/Transaction");
 const Payment = require("../models/Payments");
-const MembershipSubscription = require("../models/MembershipSubscription");
 const MembershipPlan = require("../models/MembershipPlan");
+const MembershipSubscription = require("../models/MembershipSubscription");
 
-// =======================================================
-// Initiate eSewa Payment
-// =======================================================
+const ESEWA_STATUSES = [
+  "PENDING",
+  "COMPLETE",
+  "FAILED",
+  "REFUNDED",
+  "FULL_REFUND",
+  "PARTIAL_REFUND",
+  "AMBIGUOUS",
+  "NOT_FOUND",
+  "CANCELED",
+];
 
-const initiateEsewaPayment = async (req, res) => {
+const generateTransactionUuid = () =>
+  `apexfit-${Date.now()}-${crypto.randomUUID()}`;
+
+const addMonths = (date, months) => {
+  const nextDate = new Date(date);
+  nextDate.setMonth(nextDate.getMonth() + months);
+  return nextDate;
+};
+
+const normalizeGatewayStatus = (status) => {
+  const normalized = String(status || "FAILED").toUpperCase();
+  return ESEWA_STATUSES.includes(normalized) ? normalized : "FAILED";
+};
+
+const paymentStatusFromGateway = (status) => {
+  if (status === "COMPLETE") return "Completed";
+  if (status === "PENDING" || status === "AMBIGUOUS") return "Pending";
+  return "Failed";
+};
+
+const decodeEsewaData = (encodedData) => {
+  const normalized = encodedData.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = normalized.padEnd(
+    normalized.length + ((4 - (normalized.length % 4)) % 4),
+    "=",
+  );
+
+  return JSON.parse(Buffer.from(padded, "base64").toString("utf8"));
+};
+
+const verifyEsewaSignature = (decodedData) => {
+  if (!decodedData?.signed_field_names || !decodedData?.signature) {
+    return false;
+  }
+
+  const signedData = decodedData.signed_field_names
+    .split(",")
+    .map((fieldName) => `${fieldName}=${decodedData[fieldName]}`)
+    .join(",");
+
+  const expectedSignature = crypto
+    .createHmac("sha256", process.env.SECRET)
+    .update(signedData)
+    .digest("base64");
+
+  const received = Buffer.from(decodedData.signature);
+  const expected = Buffer.from(expectedSignature);
+
+  return (
+    received.length === expected.length &&
+    crypto.timingSafeEqual(received, expected)
+  );
+};
+
+const createMembershipPayment = async ({ membershipPlanId, userId }) => {
+  if (!mongoose.Types.ObjectId.isValid(membershipPlanId)) {
+    const error = new Error("Invalid membership plan ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const plan = await MembershipPlan.findOne({
+    _id: membershipPlanId,
+    isActive: true,
+  });
+
+  if (!plan) {
+    const error = new Error("Active membership plan not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (plan.price <= 0) {
+    const error = new Error("eSewa payment amount must be greater than zero.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const activeSubscription = await MembershipSubscription.findOne({
+    userId,
+    status: "Active",
+  });
+
+  if (activeSubscription) {
+    const error = new Error("User already has an active subscription.");
+    error.statusCode = 409;
+    throw error;
+  }
+
+  const now = new Date();
+  const subscription = await MembershipSubscription.create({
+    userId,
+    membershipPlanId,
+    startDate: now,
+    endDate: addMonths(now, plan.duration),
+    status: "Pending",
+  });
+
+  const transactionUuid = generateTransactionUuid();
+  const payment = await Payment.create({
+    userId,
+    subscriptionId: subscription._id,
+    membershipPlanId,
+    transactionUuid,
+    amount: plan.price,
+    paymentMethod: "eSewa",
+    status: "Pending",
+  });
+
+  return {
+    amount: plan.price,
+    transactionUuid,
+    payment,
+    subscription,
+  };
+};
+
+const createDemoPayment = ({ amount, productId }) => {
+  const parsedAmount = Number(amount);
+
+  if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+    const error = new Error("Valid payment amount is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  return {
+    amount: parsedAmount,
+    transactionUuid: productId || generateTransactionUuid(),
+  };
+};
+
+const EsewaInitiatePayment = async (req, res) => {
+  let payment;
+  let subscription;
+
   try {
-    const { userId, membershipPlanId } = req.body;
+    const { membershipPlanId, amount, productId } = req.body;
 
-    // Find the selected membership plan
-    const plan = await MembershipPlan.findById(membershipPlanId);
-
-    if (!plan) {
-      return res.status(404).json({
+    if (membershipPlanId && !req.user?.id) {
+      return res.status(401).json({
         success: false,
-        message: "Membership plan not found",
+        message: "Login is required before buying a membership.",
       });
     }
 
-    // Get amount from membership plan
-    const amount = plan.price;
+    const paymentRequest = membershipPlanId
+      ? await createMembershipPayment({
+          membershipPlanId,
+          userId: req.user?.id,
+        })
+      : createDemoPayment({ amount, productId });
 
-    if (amount <= 0) {
+    payment = paymentRequest.payment;
+    subscription = paymentRequest.subscription;
+
+    const reqPayment = await EsewaPaymentGateway(
+      paymentRequest.amount,
+      0,
+      0,
+      0,
+      paymentRequest.transactionUuid,
+      process.env.MERCHANT_ID,
+      process.env.SECRET,
+      process.env.SUCCESS_URL,
+      process.env.FAILURE_URL,
+      process.env.ESEWAPAYMENT_URL,
+      undefined,
+      undefined,
+    );
+
+    if (reqPayment?.status !== 200) {
+      throw new Error("Could not create eSewa checkout session.");
+    }
+
+    await Transaction.create({
+      product_id: paymentRequest.transactionUuid,
+      paymentId: payment?._id || null,
+      amount: paymentRequest.amount,
+      status: "PENDING",
+    });
+
+    return res.status(200).json({
+      success: true,
+      url: reqPayment.request.res.responseUrl,
+      transactionUuid: paymentRequest.transactionUuid,
+    });
+  } catch (error) {
+    if (payment) {
+      payment.status = "Failed";
+      payment.gatewayResponse = { error: error.message };
+      await payment.save({ validateBeforeSave: false });
+    }
+
+    if (subscription) {
+      subscription.status = "Cancelled";
+      await subscription.save({ validateBeforeSave: false });
+    }
+
+    return res.status(error.statusCode || 400).json({
+      success: false,
+      message: error.message || "Error initiating eSewa payment.",
+    });
+  }
+};
+
+const activateSubscription = async (payment) => {
+  if (!payment?.subscriptionId) return null;
+
+  const subscription = await MembershipSubscription.findById(
+    payment.subscriptionId,
+  );
+
+  if (!subscription) return null;
+
+  const plan = await MembershipPlan.findById(payment.membershipPlanId);
+  const startDate = new Date();
+
+  subscription.status = "Active";
+  subscription.startDate = startDate;
+  subscription.endDate = addMonths(startDate, plan?.duration || 1);
+
+  await subscription.save();
+  return subscription;
+};
+
+const cancelSubscription = async (payment) => {
+  if (!payment?.subscriptionId) return null;
+
+  const subscription = await MembershipSubscription.findById(
+    payment.subscriptionId,
+  );
+
+  if (!subscription || subscription.status === "Active") return subscription;
+
+  subscription.status = "Cancelled";
+  await subscription.save({ validateBeforeSave: false });
+  return subscription;
+};
+
+const paymentStatus = async (req, res) => {
+  try {
+    const { data, product_id } = req.body;
+    const decodedData = data ? decodeEsewaData(data) : null;
+
+    if (decodedData && !verifyEsewaSignature(decodedData)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid membership amount",
+        message: "Invalid eSewa response signature.",
       });
     }
 
-    // Generate unique transaction id
-    const transaction_uuid = uuidv4();
+    const transactionUuid = decodedData?.transaction_uuid || product_id;
 
-    // Save payment as pending
-    await Payment.create({
-      userId,
-      membershipPlanId,
+    if (!transactionUuid) {
+      return res.status(400).json({
+        success: false,
+        message: "Transaction UUID is required.",
+      });
+    }
+
+    const payment = await Payment.findOne({ transactionUuid });
+    let transaction = await Transaction.findOne({ product_id: transactionUuid });
+
+    if (!payment && !transaction) {
+      return res.status(404).json({
+        success: false,
+        message: "Transaction not found.",
+      });
+    }
+
+    const amount = payment?.amount || transaction.amount;
+    const paymentStatusCheck = await EsewaCheckStatus(
       amount,
-      paymentMethod: "eSewa",
-      transactionId: transaction_uuid,
-      status: "Pending",
-    });
+      transactionUuid,
+      process.env.MERCHANT_ID,
+      process.env.ESEWAPAYMENT_STATUS_CHECK_URL,
+    );
 
-    // Generate eSewa signature
-    const message = `total_amount=${amount},transaction_uuid=${transaction_uuid},product_code=${process.env.ESEWA_PRODUCT_CODE}`;
+    const gatewayStatus = normalizeGatewayStatus(
+      paymentStatusCheck?.data?.status || decodedData?.status,
+    );
+    const gatewayResponse = {
+      redirect: decodedData || {},
+      statusCheck: paymentStatusCheck?.data || {},
+    };
 
-    const signature = generateSignature(message);
-
-    // Send payment details to frontend
-    return res.status(200).json({
-      success: true,
-      paymentUrl: process.env.ESEWA_PAYMENT_URL,
-
-      payment: {
+    if (!transaction) {
+      transaction = new Transaction({
+        product_id: transactionUuid,
+        paymentId: payment?._id || null,
         amount,
-        tax_amount: 0,
-        total_amount: amount,
-        transaction_uuid,
-        product_code: process.env.ESEWA_PRODUCT_CODE,
-        product_service_charge: 0,
-        product_delivery_charge: 0,
-        success_url: process.env.ESEWA_SUCCESS_URL,
-        failure_url: process.env.ESEWA_FAILURE_URL,
-        signed_field_names:
-          "total_amount,transaction_uuid,product_code",
-        signature,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-    });
-  }
-};
-
-// =======================================================
-// eSewa Success Callback
-// =======================================================
-
-const esewaSuccess = async (req, res) => {
-  try {
-    // Decode eSewa response
-    const encodedData = req.query.data;
-
-    const decodedData = JSON.parse(
-      Buffer.from(encodedData, "base64").toString("utf-8")
-    );
-
-    // Verify payment from eSewa server
-    const verification = await verifyPayment(
-      decodedData.transaction_uuid,
-      decodedData.total_amount
-    );
-
-    // Continue only if payment is successful
-    if (verification.status === "COMPLETE") {
-
-      // Update payment status
-      const payment = await Payment.findOneAndUpdate(
-        {
-          transactionId: decodedData.transaction_uuid,
-        },
-        {
-          status: "Completed",
-          transactionId: verification.ref_id,
-        },
-      { returnDocument: "after" },
-      );
-
-      // Safety check
-      if (!payment) {
-        return res.status(404).json({
-          success: false,
-          message: "Payment record not found",
-        });
-      }
-
-      // Get membership plan
-      const plan = await MembershipPlan.findById(
-        payment.membershipPlanId
-      );
-
-      if (!plan) {
-        return res.status(404).json({
-          success: false,
-          message: "Membership plan not found",
-        });
-      }
-
-      // Generate subscription dates
-      const startDate = new Date();
-
-      const endDate = new Date(startDate);
-      endDate.setMonth(endDate.getMonth() + plan.duration);
-
-      // Create membership subscription
-      await MembershipSubscription.create({
-        userId: payment.userId,
-        membershipPlanId: payment.membershipPlanId,
-        startDate,
-        endDate,
-        status: "Active",
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Payment Successful",
-      decodedData,
-      verification,
-    });
+    transaction.status = gatewayStatus;
+    transaction.gatewayResponse = gatewayResponse;
+    await transaction.save();
 
+    let subscription = null;
+
+    if (payment) {
+      payment.status = paymentStatusFromGateway(gatewayStatus);
+      payment.transactionId =
+        decodedData?.transaction_code ||
+        paymentStatusCheck?.data?.ref_id ||
+        paymentStatusCheck?.data?.transaction_code ||
+        payment.transactionId;
+      payment.gatewayResponse = gatewayResponse;
+
+      if (gatewayStatus === "COMPLETE") {
+        payment.paymentDate = new Date();
+        subscription = await activateSubscription(payment);
+      } else if (payment.status === "Failed") {
+        subscription = await cancelSubscription(payment);
+      }
+
+      await payment.save({ validateBeforeSave: false });
+    }
+
+    return res.status(200).json({
+      success: gatewayStatus === "COMPLETE",
+      message:
+        gatewayStatus === "COMPLETE"
+          ? "Payment verified successfully."
+          : "Payment is not complete.",
+      status: gatewayStatus,
+      payment,
+      subscription,
+    });
   } catch (error) {
-    console.log(error);
+    console.error("Error updating transaction status:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: "Server error while verifying payment.",
+      error: error.message,
     });
   }
 };
 
-// =======================================================
-// eSewa Failure Callback
-// =======================================================
-
-const esewaFailure = (req, res) => {
-
-  console.log(req.query);
-
-  return res.status(400).json({
-    success: false,
-    message: "Payment Failed",
-    data: req.query,
-  });
-};
-
-// =======================================================
-// Export Controller Functions
-// =======================================================
-
-module.exports = {
-  initiateEsewaPayment,
-  esewaSuccess,
-  esewaFailure,
-};
+module.exports = { EsewaInitiatePayment, paymentStatus };

@@ -16,7 +16,7 @@ const bookingRoutes = require("./Routes/bookingRoutes");
 const workoutPlanRoutes  = require("./Routes/workoutRoutes");
 const dietRoutes = require("./Routes/dietRoutes")
 const contactRoutes = require("./Routes/contactRoutes");
-
+const blogRoutes =require("./Routes/blogRoutes");
 
 // Esewa Routes
 const esewaRoutes = require("./Routes/esewaRoutes");
@@ -76,6 +76,10 @@ app.use("/api/admin", adminRoutes);
 // Esewa routes
 
 app.use("/api/esewa", esewaRoutes);
+
+// Blog Routes
+
+app.use("/api/blog",blogRoutes)
 
 
 const PORT = process.env.PORT || 5000;

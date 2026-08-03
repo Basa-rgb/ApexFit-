@@ -17,6 +17,7 @@ const workoutPlanRoutes  = require("./Routes/workoutRoutes");
 const dietRoutes = require("./Routes/dietRoutes")
 const contactRoutes = require("./Routes/contactRoutes");
 const blogRoutes =require("./Routes/blogRoutes");
+const galleryRoutes = require("./Routes/galleryRoutes");
 
 // Esewa Routes
 const esewaRoutes = require("./Routes/esewaRoutes");
@@ -81,6 +82,10 @@ app.use("/api/esewa", esewaRoutes);
 
 app.use("/api/blog",blogRoutes)
 
+
+// Gallery Routes
+
+app.use("/api/gallery",galleryRoutes);
 
 const PORT = process.env.PORT || 5000;
 

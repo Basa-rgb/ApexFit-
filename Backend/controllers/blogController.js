@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const Blog = require("../models/Blog");
-
+const uploadToCloudinary = require("../utils/uploadToCloudinary");
 // create the the blog
 
 const createBlog = async (req, res) => {
@@ -52,7 +52,10 @@ const createBlog = async (req, res) => {
       });
     }
 
-    const image = req.file.path;
+    // Upload image to Cloudinary
+    const uploaded = await uploadToCloudinary(req.file.buffer, "apexfit/blogs");
+
+    const image = uploaded.url;
 
     const newBlog = await Blog.create({
       title,
@@ -66,7 +69,6 @@ const createBlog = async (req, res) => {
       featured,
       status,
     });
-
     return res.status(201).json({
       success: true,
       message: "Blog created successfully",
@@ -253,9 +255,6 @@ const updateBlog = async (req, res) => {
   }
 };
 
-
-
-
 // Delete the Blog
 
 const deleteBlog = async (req, res) => {
@@ -297,5 +296,10 @@ const deleteBlog = async (req, res) => {
   }
 };
 
-
-module.exports ={createBlog , getAllBlogs ,getBlogById ,updateBlog ,deleteBlog}
+module.exports = {
+  createBlog,
+  getAllBlogs,
+  getBlogById,
+  updateBlog,
+  deleteBlog,
+};

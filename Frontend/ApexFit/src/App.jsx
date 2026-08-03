@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import PaymentSuccess from "./pages/PaymentSuccess"; 
-import PaymentFailed from "./pages/Failure"; 
-import PaymentForm from "./pages/PaymentForm"
+import PaymentSuccess from "./pages/Payment/PaymentSuccess"; 
+import PaymentFailed from "./pages/Payment/Failure"; 
+import PaymentForm from "./pages/Payment/PaymentForm"
 
 function App() {
   return (

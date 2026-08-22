@@ -13,6 +13,9 @@ const transporter = nodemailer.createTransport({
   connectionTimeout: 10000,
   greetingTimeout: 10000,
   socketTimeout: 15000,
+  // Force IPv4 — some hosts (e.g. Render) can't route outbound IPv6 to
+  // Gmail's SMTP servers, which causes ENETUNREACH/ETIMEDOUT on connect.
+  family: 4,
 });
 
 // Verify credentials at boot so bad config appears in Render logs

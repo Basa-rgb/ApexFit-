@@ -8,7 +8,7 @@ const { validateEmail, validatePassword } = require("../utils/validators");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const sendEmail = require("../utils/sendEmail");
+const { sendEmailAsync } = require("../utils/sendEmail");
 const generateOtp = require("../utils/generateOtp");
 const axios = require("axios");
 const User = require("../models/User");
@@ -162,8 +162,8 @@ const sendRegistrationOtp = async (req, res) => {
       expiresAt: new Date(Date.now() + 10 * 60 * 1000),
     });
 
-    // Send email
-    await sendEmail({
+    // Send email in the background so slow SMTP never blocks the response.
+    sendEmailAsync({
       to: email,
       subject: "Registration OTP",
       html: otpTemplate(otp),
@@ -315,7 +315,7 @@ const resendRegistrationOtp = async (req, res) => {
     otpData.expiresAt = new Date(Date.now() + 10 * 60 * 1000);
     await otpData.save();
 
-    await sendEmail({
+    sendEmailAsync({
       to: email,
       subject: "Registration OTP",
       html: otpTemplate(otp),
@@ -589,7 +589,7 @@ const forgotPassword = async (req, res) => {
 
     const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
-    await sendEmail({
+    sendEmailAsync({
       to: user.email,
       subject: "Reset Your Password",
       html: forgotPasswordTemplate(resetUrl),
@@ -663,7 +663,7 @@ const sendOtp = async (req, res) => {
     });
 
     // Send Email
-    await sendEmail({
+    sendEmailAsync({
       to: email,
       subject: "Your OTP Code",
       text: `Your OTP is ${otp}. It is valid for 10 minutes.`,

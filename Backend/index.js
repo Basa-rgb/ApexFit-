@@ -2,6 +2,37 @@ const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config();
 
+// Fail loudly at boot when deployment-critical URLs are still localhost
+// or eSewa credentials are missing — payments break silently otherwise.
+const LOCALHOST_PATTERN = /localhost|127\.0\.0\.1/;
+
+["SUCCESS_URL", "FAILURE_URL", "CLIENT_URL"].forEach((key) => {
+  if (!process.env[key]) {
+    console.warn(`[config] Missing ${key} — payments/auth links will fail.`);
+  } else if (LOCALHOST_PATTERN.test(process.env[key])) {
+    console.warn(
+      `[config] ${key} is "${process.env[key]}" — set it to your deployed frontend URL (e.g. https://your-app.vercel.app) or eSewa will redirect users to localhost.`
+    );
+  }
+});
+
+[
+  "MERCHANT_ID",
+  "SECRET",
+  "ESEWAPAYMENT_URL",
+  "ESEWAPAYMENT_STATUS_CHECK_URL",
+  "MONGOOSE_URL",
+  "JWT_SECRET",
+  "EMAIL_USER",
+  "EMAIL_PASSWORD",
+].forEach((key) => {
+  if (!process.env[key]) {
+    console.warn(
+      `[config] Missing ${key} — features depending on it will not work.`
+    );
+  }
+});
+
 
 const connectedDb = require("./config/db");
 const cors = require("cors");

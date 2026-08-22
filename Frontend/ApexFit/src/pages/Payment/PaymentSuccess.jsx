@@ -47,7 +47,8 @@ const Success = () => {
         {
           data: token,
           product_id: decoded.transaction_uuid,
-        }
+        },
+        { timeout: 30000 }
       );
 
       if (response.data?.success) {

@@ -65,7 +65,11 @@ export default function RegisterForm() {
             navigate("/verify-otp");
         } catch (error) {
             console.log(error);
-            alert(error.response?.data?.message || "Registration failed");
+            const message =
+                error.code === "ECONNABORTED"
+                    ? "Request timed out. The server is waking up — please try again."
+                    : error.response?.data?.message || "Registration failed. Check your connection and try again.";
+            alert(message);
         } finally {
             setIsSubmitting(false)
         }

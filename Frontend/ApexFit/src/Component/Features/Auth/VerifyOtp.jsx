@@ -53,9 +53,13 @@ const VerifyOtp = () => {
       if (res.data.user) localStorage.setItem("user", JSON.stringify(res.data.user));
       localStorage.removeItem("pendingEmail");
       alert(res.data.message || "Account verified successfully.");
-      navigate("/", { replace: true });
+      navigate(res.data.user?.role === "admin" ? "/admin/dashboard" : "/dashboard", { replace: true });
     } catch (error) {
-      alert(error.response?.data?.message || "OTP verification failed");
+      const message =
+        error.code === "ECONNABORTED"
+          ? "Request timed out. The server is waking up — please try again."
+          : error.response?.data?.message || "OTP verification failed";
+      alert(message);
     } finally {
       setIsVerifying(false)
     }

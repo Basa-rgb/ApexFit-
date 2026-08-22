@@ -65,6 +65,10 @@ connectedDb();
 
 const app = express();
 
+// Render sits behind one reverse proxy hop — without this every visitor
+// appears to share Render's proxy IP, which breaks rate limiting.
+app.set("trust proxy", 1);
+
 app.use(cors());
 app.use(express.json());
 

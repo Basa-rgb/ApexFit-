@@ -1,8 +1,11 @@
 const nodemailer = require("nodemailer");
+const dns = require("dns");
 
 // Reuse one transporter instead of creating a new connection per request.
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // true for port 465, false for 587
   auth: {
     user: process.env.EMAIL_USER,
     // Google displays app passwords in spaced groups ("abcd efgh ...")
@@ -16,6 +19,12 @@ const transporter = nodemailer.createTransport({
   // Force IPv4 — some hosts (e.g. Render) can't route outbound IPv6 to
   // Gmail's SMTP servers, which causes ENETUNREACH/ETIMEDOUT on connect.
   family: 4,
+  // Belt-and-suspenders: force the DNS lookup itself to only return
+  // IPv4 addresses, in case `family` alone isn't enough to stop Node
+  // from picking the IPv6 result first.
+  lookup: (hostname, options, callback) => {
+    dns.lookup(hostname, { family: 4 }, callback);
+  },
 });
 
 // Verify credentials at boot so bad config appears in Render logs

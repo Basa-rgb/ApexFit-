@@ -235,7 +235,8 @@ const updateBlog = async (req, res) => {
     }
 
     if (req.file) {
-      blog.image = req.file.path;
+      const uploaded = await uploadToCloudinary(req.file.buffer, "apexfit/blogs");
+      blog.image = uploaded.url;
     }
 
     await blog.save();

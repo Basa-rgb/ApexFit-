@@ -1,0 +1,2594 @@
+{
+  "info": {
+    "_postman_id": "160fd610-cb65-4e3a-9a7a-7409dff2f9d1",
+    "name": "Gym",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56601153",
+    "_collection_link": "https://go.postman.co/collection/56601153-160fd610-cb65-4e3a-9a7a-7409dff2f9d1?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"name\":\"basanta\",\r\n\"email\":\"basantan109@gmail.com\",\r\n\"password\":\"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/register/send-otp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "register",
+                "send-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "verify-otp",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"basantanepali336@gmail.com\",\r\n    \"otp\":\"938377\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/register/verify-otp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "register",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"email\":\"basantan109@gmail.com\",\r\n\"password\":\"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "forgotPassword",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"basantanepali336@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/forgot-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "forgot-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "reset-password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"password\": \"12345\",\r\n  \"confirmPassword\": \"12345\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/reset-password/b0853000ac557c9940a0c8482c332fab7a7e41fc531e7deb06aa4709a6400128",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "reset-password",
+                "b0853000ac557c9940a0c8482c332fab7a7e41fc531e7deb06aa4709a6400128"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "send-otp",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"basantan109@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/send-otp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "send-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "change-password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0y5f}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"currentPassword\": \"12345\",\r\n  \"newPassword\": \"sarthak123\",\r\n  \"confirmPassword\": \"sarthak123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/change-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "userAuth",
+      "item": [
+        {
+          "name": "getProfile",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "updateProfile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{supabase_service_role_api_key_03f7}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Basanta Raj\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "users",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteAccount",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0sv2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Basanta Raj\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "users",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "trainerAuth",
+      "item": [
+        {
+          "name": "createTrainer",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{supabase_service_role_api_key_07dp}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"fullName\": \"John Smith\",\r\n  \"email\": \"john@gmail.com\",\r\n  \"phone\": \"9812345678\",\r\n  \"gender\": \"Male\",\r\n  \"bio\": \"Certified Fitness Trainer\",\r\n  \"specialization\": [\"Weight Training\", \"Cardio\"],\r\n  \"experience\": 5,\r\n  \"certifications\": [\"ACE Certified\"],\r\n  \"availableDays\": [\"Monday\", \"Wednesday\", \"Friday\"],\r\n  \"availableTime\": {\r\n    \"start\": \"09:00\",\r\n    \"end\": \"17:00\"\r\n  },\r\n  \"monthlyFee\": 15000,\r\n  \"personalTrainingFee\": 800,\r\n  \"facebook\": \"https://facebook.com/john\",\r\n  \"instagram\": \"https://instagram.com/john\",\r\n  \"linkedin\": \"https://linkedin.com/in/john\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/trainers/create-trainer",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "trainers",
+                "create-trainer"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAllTrainers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_02le}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/trainers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "trainers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getTrainerById",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "updateTrainer",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_076i}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"fullName\": \"basanta\",\r\n  \"email\": \"johnsmith@gmail.com\",\r\n  \"phone\": \"9800000000\",\r\n  \"gender\": \"Male\",\r\n  \"bio\": \"Certified Fitness Trainer\",\r\n  \"experience\": 5,\r\n  \"monthlyFee\": 4000,\r\n  \"personalTrainingFee\": 800,\r\n  \"availableDays\": [\"Sunday\", \"Monday\"],\r\n  \"availableTime\": {\r\n    \"start\": \"08:00\",\r\n    \"end\": \"18:00\"\r\n  },\r\n  \"specialization\": [\r\n    \"Weight Loss\",\r\n    \"Bodybuilding\"\r\n  ],\r\n  \"certifications\": [\r\n    \"ACE\",\r\n    \"NASM\"\r\n  ],\r\n  \"facebook\": \"https://facebook.com/john\",\r\n  \"instagram\": \"https://instagram.com/john\",\r\n  \"linkedin\": \"https://linkedin.com/in/john\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/trainers/6a663f1762a79daeb68828f3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "trainers",
+                "6a663f1762a79daeb68828f3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteTrainer",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_02le}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/trainers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "trainers"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "membership",
+      "item": [
+        {
+          "name": "createMembershipPlan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_076i}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Premium\",\r\n  \"description\": \"Access to all gym equipment, group classes, and personal trainer support.\",\r\n  \"duration\": 3,\r\n  \"price\": 15000,\r\n  \"features\": [\r\n    \"Unlimited Gym Access\",\r\n    \"Personal Trainer\",\r\n    \"Diet Plan\",\r\n    \"Locker Facility\"\r\n  ],\r\n  \"planType\": \"Premium\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/membership-plans",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "membership-plans"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAllMembershipPlans",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_076i}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/membership-plans",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "membership-plans"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getMembershipPlanById",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_076i}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/membership-plans/6a67376c394ffd49130c653a",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "membership-plans",
+                "6a67376c394ffd49130c653a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateMembership",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_076i}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Premium Plus\",\r\n  \"description\": \"Premium membership with extra facilities\",\r\n  \"duration\": 12,\r\n  \"price\": 8000,\r\n  \"features\": [\r\n    \"Gym Access\",\r\n    \"Personal Trainer\",\r\n    \"Diet Plan\"\r\n  ],\r\n  \"planType\": \"VIP\",\r\n  \"isActive\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/membership-plans/6a67376c394ffd49130c653a",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "membership-plans",
+                "6a67376c394ffd49130c653a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteMembership",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_143p}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Premium Plus\",\r\n  \"description\": \"Premium membership with extra facilities\",\r\n  \"duration\": 12,\r\n  \"price\": 8000,\r\n  \"features\": [\r\n    \"Gym Access\",\r\n    \"Personal Trainer\",\r\n    \"Diet Plan\"\r\n  ],\r\n  \"planType\": \"VIP\",\r\n  \"isActive\": true\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/membership-plans/6a67376c394ffd49130c653a",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "membership-plans",
+                "6a67376c394ffd49130c653a"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "subscription",
+      "item": [
+        {
+          "name": "createSubscription",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{supabase_service_role_api_key_1dfr}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"6a65fc43734c7cd566f0b53e\",\r\n  \"membershipPlanId\": \"6a6791b34e410e533f4bbcb6\"\r\n  \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/subscriptions",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "subscriptions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getSubscription",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{supabase_service_role_api_key_1dfr}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/subscriptions",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "subscriptions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getSubscriptionByID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{supabase_service_role_api_key_1dfr}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/subscriptions/6a685985c31f69bfd33fbae9",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "subscriptions",
+                "6a685985c31f69bfd33fbae9"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateSubscription",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_1dfr}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"Expired\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/subscriptions/6a685985c31f69bfd33fbae9",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "subscriptions",
+                "6a685985c31f69bfd33fbae9"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteSubscription",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{supabase_service_role_api_key_1dfr}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"Expired\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/subscriptions/6a685985c31f69bfd33fbae9",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "subscriptions",
+                "6a685985c31f69bfd33fbae9"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "payment",
+      "item": [
+        {
+          "name": "getAllPayment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_1dfr}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/payments",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "payments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getPaymentById",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_1dfr}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/payments/6a6ad0824721773beb746519",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "payments",
+                "6a6ad0824721773beb746519"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updatePayment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_1dfr}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"Pending\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/payments/6a6ad0824721773beb746519",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "payments",
+                "6a6ad0824721773beb746519"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deletePayment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_1dfr}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/payments/6a6ad5aff33abf7f1209ba3a",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "payments",
+                "6a6ad5aff33abf7f1209ba3a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "createPayment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/payments",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "payments"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "createBookings",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{supabase_service_role_api_key_0u20}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"6a65fc43734c7cd566f0b53e\",\r\n  \"trainerId\": \"6a663f1762a79daeb68828f3\",\r\n  \"bookingDate\": \"2026-08-15\",\r\n  \"timeSlot\": \"10:00 AM - 11:00 AM\",\r\n  \"sessionType\": \"Personal Training\",\r\n  \"notes\": \"Need focus on weight loss\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/bookings",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAllbookings",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/bookings",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "bookings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getBookingsById",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/bookings/6a6af238e8cdc2b2c98b7bd0",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "bookings",
+                "6a6af238e8cdc2b2c98b7bd0"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateBookings",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"Confirmed\",\r\n  \"timeSlot\": \"12:00 PM - 1:00 PM\",\r\n  \"notes\": \"Bring resistance bands\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/bookings/6a6af238e8cdc2b2c98b7bd0",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "bookings",
+                "6a6af238e8cdc2b2c98b7bd0"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteBooking",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"Confirmed\",\r\n  \"timeSlot\": \"12:00 PM - 1:00 PM\",\r\n  \"notes\": \"Bring resistance bands\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/bookings/6a6af238e8cdc2b2c98b7bd0",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "bookings",
+                "6a6af238e8cdc2b2c98b7bd0"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "work-out plan",
+      "item": [
+        {
+          "name": "createWorkout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"6a65fc43734c7cd566f0b53e\",\r\n  \"trainerId\": \"6a663f1762a79daeb68828f3\",\r\n  \"title\": \"Beginner Muscle Gain Plan\",\r\n  \"goal\": \"Muscle Gain\",\r\n  \"duration\": \"3 Months\",\r\n  \"exercises\": [\r\n    {\r\n      \"name\": \"Bench Press\",\r\n      \"sets\": 3,\r\n      \"reps\": 12\r\n    },\r\n    {\r\n      \"name\": \"Squats\",\r\n      \"sets\": 4,\r\n      \"reps\": 10\r\n    },\r\n    {\r\n      \"name\": \"Deadlift\",\r\n      \"sets\": 3,\r\n      \"reps\": 8\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/workout-plans",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "workout-plans"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAllworkout",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"6a65fc43734c7cd566f0b53e\",\r\n  \"trainerId\": \"6a663f1762a79daeb68828f3\",\r\n  \"title\": \"Beginner Muscle Gain Plan\",\r\n  \"goal\": \"Muscle Gain\",\r\n  \"duration\": \"3 Months\",\r\n  \"exercises\": [\r\n    {\r\n      \"name\": \"Bench Press\",\r\n      \"sets\": 3,\r\n      \"reps\": 12\r\n    },\r\n    {\r\n      \"name\": \"Squats\",\r\n      \"sets\": 4,\r\n      \"reps\": 10\r\n    },\r\n    {\r\n      \"name\": \"Deadlift\",\r\n      \"sets\": 3,\r\n      \"reps\": 8\r\n    }\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/workout-plans",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "workout-plans"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getWorkoutById",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"6a65fc43734c7cd566f0b53e\",\r\n  \"trainerId\": \"6a663f1762a79daeb68828f3\",\r\n  \"title\": \"Beginner Muscle Gain Plan\",\r\n  \"goal\": \"Muscle Gain\",\r\n  \"duration\": \"3 Months\",\r\n  \"exercises\": [\r\n    {\r\n      \"name\": \"Bench Press\",\r\n      \"sets\": 3,\r\n      \"reps\": 12\r\n    },\r\n    {\r\n      \"name\": \"Squats\",\r\n      \"sets\": 4,\r\n      \"reps\": 10\r\n    },\r\n    {\r\n      \"name\": \"Deadlift\",\r\n      \"sets\": 3,\r\n      \"reps\": 8\r\n    }\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/workout-plans/6a6af806a26c571445a47143",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "workout-plans",
+                "6a6af806a26c571445a47143"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateWorkout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Advanced Muscle Gain Plan\",\r\n  \"goal\": \"Strength\",\r\n  \"duration\": \"6 Months\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/workout-plans/6a6af806a26c571445a47143",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "workout-plans",
+                "6a6af806a26c571445a47143"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteWorkout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Advanced Muscle Gain Plan\",\r\n  \"goal\": \"Strength\",\r\n  \"duration\": \"6 Months\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/workout-plans/6a6af806a26c571445a47143",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "workout-plans",
+                "6a6af806a26c571445a47143"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "dietPlans",
+      "item": [
+        {
+          "name": "createDietPlan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"6a65fc43734c7cd566f0b53e\",\r\n  \"trainerId\": \"6a663f1762a79daeb68828f3\",\r\n  \"title\": \"Muscle Gain Diet Plan\",\r\n  \"goal\": \"Muscle Gain\",\r\n  \"duration\": \"3 Months\",\r\n  \"meals\": [\r\n    {\r\n      \"mealType\": \"Breakfast\",\r\n      \"foodItems\": [\r\n        \"Eggs\",\r\n        \"Oats\",\r\n        \"Banana\"\r\n      ],\r\n      \"calories\": 600\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/diet-plans",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "diet-plans"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getDietPlan",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"6a65fc43734c7cd566f0b53e\",\r\n  \"trainerId\": \"6a663f1762a79daeb68828f3\",\r\n  \"title\": \"Muscle Gain Diet Plan\",\r\n  \"goal\": \"Muscle Gain\",\r\n  \"duration\": \"3 Months\",\r\n  \"meals\": [\r\n    {\r\n      \"mealType\": \"Breakfast\",\r\n      \"foodItems\": [\r\n        \"Eggs\",\r\n        \"Oats\",\r\n        \"Banana\"\r\n      ],\r\n      \"calories\": 600\r\n    }\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/diet-plans",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "diet-plans"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getDietPlanById",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"6a65fc43734c7cd566f0b53e\",\r\n  \"trainerId\": \"6a663f1762a79daeb68828f3\",\r\n  \"title\": \"Muscle Gain Diet Plan\",\r\n  \"goal\": \"Muscle Gain\",\r\n  \"duration\": \"3 Months\",\r\n  \"meals\": [\r\n    {\r\n      \"mealType\": \"Breakfast\",\r\n      \"foodItems\": [\r\n        \"Eggs\",\r\n        \"Oats\",\r\n        \"Banana\"\r\n      ],\r\n      \"calories\": 600\r\n    }\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/diet-plans/6a6afee5696adede755acc8d",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "diet-plans",
+                "6a6afee5696adede755acc8d"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateDietPlan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"6a65fc43734c7cd566f0b53e\",\r\n  \"trainerId\": \"6a663f1762a79daeb68828f3\",\r\n  \"title\": \"Muscle Gain Diet Plan\",\r\n  \"goal\": \"Muscle Gain\",\r\n  \"duration\": \"3 Months\",\r\n  \"meals\": [\r\n    {\r\n      \"mealType\": \"Breakfast\",\r\n      \"foodItems\": [\r\n        \"Eggs\",\r\n        \"Oats\",\r\n        \"Banana\"\r\n      ],\r\n      \"calories\": 700\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/diet-plans/6a6afee5696adede755acc8d",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "diet-plans",
+                "6a6afee5696adede755acc8d"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"6a65fc43734c7cd566f0b53e\",\r\n  \"trainerId\": \"6a663f1762a79daeb68828f3\",\r\n  \"title\": \"Muscle Gain Diet Plan\",\r\n  \"goal\": \"Muscle Gain\",\r\n  \"duration\": \"3 Months\",\r\n  \"meals\": [\r\n    {\r\n      \"mealType\": \"Breakfast\",\r\n      \"foodItems\": [\r\n        \"Eggs\",\r\n        \"Oats\",\r\n        \"Banana\"\r\n      ],\r\n      \"calories\": 600\r\n    }\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/diet-plans/6a6afee5696adede755acc8d",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "diet-plans",
+                "6a6afee5696adede755acc8d"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "contact",
+      "item": [
+        {
+          "name": "createContact",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Basanta\",\r\n  \"email\": \"basantan109@gmail.com\",\r\n  \"phone\": \"9801234567\",\r\n  \"message\": \"Hello, I want to know more about your Premium Membership plan.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/contacts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "contacts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getContact",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Basanta\",\r\n  \"email\": \"basantan109@gmail.com\",\r\n  \"phone\": \"9801234567\",\r\n  \"message\": \"Hello, I want to know more about your Premium Membership plan.\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/contacts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "contacts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getContactById",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Basanta\",\r\n  \"email\": \"basantan109@gmail.com\",\r\n  \"phone\": \"9801234567\",\r\n  \"message\": \"Hello, I want to know more about your Premium Membership plan.\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/contacts/6a6b056e2a333cd43ffa45c5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "contacts",
+                "6a6b056e2a333cd43ffa45c5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateContact",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Basanta\",\r\n  \"email\": \"basantan109@gmail.com\",\r\n  \"phone\": \"9749328435\",\r\n  \"message\": \"Hello, I want to know more about your Premium Membership plan.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/contacts/6a6b056e2a333cd43ffa45c5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "contacts",
+                "6a6b056e2a333cd43ffa45c5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteContact",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_16bt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Basanta\",\r\n  \"email\": \"basantan109@gmail.com\",\r\n  \"phone\": \"9749328435\",\r\n  \"message\": \"Hello, I want to know more about your Premium Membership plan.\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/contacts/6a6b056e2a333cd43ffa45c5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "contacts",
+                "6a6b056e2a333cd43ffa45c5"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ADMIN",
+      "item": [
+        {
+          "name": "adminDash",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{supabase_service_role_api_key_0ppk}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/admin/dashboard",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "admin",
+                "dashboard"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Esewa",
+      "item": [
+        {
+          "name": "New Request",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/esewa/initiate",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "esewa",
+                "initiate"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Blog",
+      "item": [
+        {
+          "name": "createBlog",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "type": "text",
+                  "uuid": "58e83100-b41e-45c5-951c-a30688ea3314",
+                  "value": "Gym Tips"
+                },
+                {
+                  "key": "description",
+                  "type": "text",
+                  "uuid": "e7f2de28-6298-42d0-a931-14d19f475a48",
+                  "value": "This blog explains the importance of exercise"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "fb3ce72b-7c74-4303-93d6-85c562e6a7cb",
+                  "src": "postman-cloud:///1f18efd5-7d6e-4fd0-81ab-659cad53a2b5"
+                },
+                {
+                  "key": "excerpt",
+                  "type": "text",
+                  "uuid": "2335d8bb-ce60-4381-97d4-15b2b0c0cdb4",
+                  "value": "apexfit"
+                },
+                {
+                  "key": "content",
+                  "type": "text",
+                  "uuid": "f5b019bc-191c-4b8d-aaf0-89de6981d4ab",
+                  "value": "flkdsjkfdsfjkjfjdskfldsjfjkdsjflask"
+                },
+                {
+                  "key": "category",
+                  "type": "text",
+                  "uuid": "58e57e17-a21c-4666-ad45-4aed73d7814c",
+                  "value": "Lifestyle"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/blog",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "blog"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAllBlog",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "type": "text",
+                  "uuid": "58e83100-b41e-45c5-951c-a30688ea3314",
+                  "value": "Gym Tips"
+                },
+                {
+                  "key": "description",
+                  "type": "text",
+                  "uuid": "e7f2de28-6298-42d0-a931-14d19f475a48",
+                  "value": "This blog explains the importance of exercise"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "fb3ce72b-7c74-4303-93d6-85c562e6a7cb",
+                  "src": "postman-cloud:///1f18efd5-7d6e-4fd0-81ab-659cad53a2b5"
+                },
+                {
+                  "key": "excerpt",
+                  "type": "text",
+                  "uuid": "2335d8bb-ce60-4381-97d4-15b2b0c0cdb4",
+                  "value": "apexfit"
+                },
+                {
+                  "key": "content",
+                  "type": "text",
+                  "uuid": "f5b019bc-191c-4b8d-aaf0-89de6981d4ab",
+                  "value": "flkdsjkfdsfjkjfjdskfldsjfjkdsjflask"
+                },
+                {
+                  "key": "category",
+                  "type": "text",
+                  "uuid": "58e57e17-a21c-4666-ad45-4aed73d7814c",
+                  "value": "Lifestyle"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/blog",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "blog"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getBlogById",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "type": "text",
+                  "uuid": "58e83100-b41e-45c5-951c-a30688ea3314",
+                  "value": "Gym Tips"
+                },
+                {
+                  "key": "description",
+                  "type": "text",
+                  "uuid": "e7f2de28-6298-42d0-a931-14d19f475a48",
+                  "value": "This blog explains the importance of exercise"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "fb3ce72b-7c74-4303-93d6-85c562e6a7cb",
+                  "src": "postman-cloud:///1f18efd5-7d6e-4fd0-81ab-659cad53a2b5"
+                },
+                {
+                  "key": "excerpt",
+                  "type": "text",
+                  "uuid": "2335d8bb-ce60-4381-97d4-15b2b0c0cdb4",
+                  "value": "apexfit"
+                },
+                {
+                  "key": "content",
+                  "type": "text",
+                  "uuid": "f5b019bc-191c-4b8d-aaf0-89de6981d4ab",
+                  "value": "flkdsjkfdsfjkjfjdskfldsjfjkdsjflask"
+                },
+                {
+                  "key": "category",
+                  "type": "text",
+                  "uuid": "58e57e17-a21c-4666-ad45-4aed73d7814c",
+                  "value": "Lifestyle"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/blog/6a702cdde727b30e671ce0db",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "blog",
+                "6a702cdde727b30e671ce0db"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateBlog",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "type": "text",
+                  "uuid": "7a44c299-2e57-44d6-8996-f863b6475c24",
+                  "value": "basanta"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/blog/6a702cdde727b30e671ce0db",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "blog",
+                "6a702cdde727b30e671ce0db"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteBlog",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/blog/6a702cdde727b30e671ce0db",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "blog",
+                "6a702cdde727b30e671ce0db"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "gallery",
+      "item": [
+        {
+          "name": "createGallery",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "type": "text",
+                  "uuid": "133db1ca-76d3-438c-9e84-bef66b815d7e",
+                  "value": "gym env"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "0c59c802-f956-4170-a802-bb9fc7455f1c",
+                  "src": "postman-cloud:///1f18ca67-0612-4330-a26a-a1b26210435d"
+                },
+                {
+                  "key": "category",
+                  "type": "text",
+                  "uuid": "85746417-0438-4a3e-907f-cda2974bb564",
+                  "value": "Workout"
+                },
+                {
+                  "key": "date",
+                  "type": "text",
+                  "uuid": "2e4aae3e-e32c-41e7-8353-e3fee6477f0c",
+                  "value": "8/3/2026"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/gallery",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "gallery"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAllGallery",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "type": "text",
+                  "uuid": "133db1ca-76d3-438c-9e84-bef66b815d7e",
+                  "value": "gym env"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "0c59c802-f956-4170-a802-bb9fc7455f1c",
+                  "src": "postman-cloud:///1f18ca67-0612-4330-a26a-a1b26210435d"
+                },
+                {
+                  "key": "category",
+                  "type": "text",
+                  "uuid": "85746417-0438-4a3e-907f-cda2974bb564",
+                  "value": "Workout"
+                },
+                {
+                  "key": "date",
+                  "type": "text",
+                  "uuid": "2e4aae3e-e32c-41e7-8353-e3fee6477f0c",
+                  "value": "8/3/2026"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/gallery/6a7036a70edf4d2a74646c57",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "gallery",
+                "6a7036a70edf4d2a74646c57"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getGalleryById",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "type": "text",
+                  "uuid": "133db1ca-76d3-438c-9e84-bef66b815d7e",
+                  "value": "gym env"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "0c59c802-f956-4170-a802-bb9fc7455f1c",
+                  "src": "postman-cloud:///1f18ca67-0612-4330-a26a-a1b26210435d"
+                },
+                {
+                  "key": "category",
+                  "type": "text",
+                  "uuid": "85746417-0438-4a3e-907f-cda2974bb564",
+                  "value": "Workout"
+                },
+                {
+                  "key": "date",
+                  "type": "text",
+                  "uuid": "2e4aae3e-e32c-41e7-8353-e3fee6477f0c",
+                  "value": "8/3/2026"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/gallery",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "gallery"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateGallery",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "type": "text",
+                  "uuid": "b66c92b5-dd10-451d-9507-41143115ccaf",
+                  "value": "GYM Environment"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/gallery/6a7036a70edf4d2a74646c57",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "gallery",
+                "6a7036a70edf4d2a74646c57"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteGallery",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "type": "text",
+                  "uuid": "b66c92b5-dd10-451d-9507-41143115ccaf",
+                  "value": "GYM Environment"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/gallery/6a7036a70edf4d2a74646c57",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "gallery",
+                "6a7036a70edf4d2a74646c57"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Newsletter",
+      "item": [
+        {
+          "name": "subscribeNewsletter",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\":\"basanta\",\r\n  \"email\": \"basantan@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/newsletter/subscribe",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "newsletter",
+                "subscribe"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getNewsletter",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/newsletter",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "newsletter"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteNewsletter",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0d1r}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/newsletter/6a740da9cc64f59545709d4d",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "newsletter",
+                "6a740da9cc64f59545709d4d"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "auth_secret_0ooc",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_03f7",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_0sv2",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_07dp",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_02le",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_076i",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_076i",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_143p",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_143p",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_143p",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_1dfr",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_1dfr",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_1dfr",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0u20",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_16bt",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_16bt",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0ppk",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_0y5f",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_0d1r",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0d1r",
+      "secret": true
+    }
+  ]
+}

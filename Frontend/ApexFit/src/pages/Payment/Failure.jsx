@@ -1,12 +1,32 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
 import { XCircle, RefreshCcw, Home } from "lucide-react";
 
 const Failure = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  React.useEffect(() => {
+    const data = new URLSearchParams(location.search).get("data");
+    if (!data) return;
+
+    try {
+      const decoded = JSON.parse(atob(data.replace(/-/g, "+").replace(/_/g, "/")));
+      if (decoded?.transaction_uuid) {
+        const apiBase = (import.meta.env.VITE_API_URL || "http://localhost:3000/api").replace(/\/?$/, "");
+        axios.post(`${apiBase}/esewa/payment-status`, {
+          data,
+          product_id: decoded.transaction_uuid,
+        }).catch((error) => console.error("Could not record failed payment:", error));
+      }
+    } catch (error) {
+      console.error("Could not decode failed eSewa response:", error);
+    }
+  }, [location.search]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-rose-100 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-linear-to-br from-red-50 via-white to-rose-100 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 sm:p-10 text-center">
 
         {/* Failure Icon */}
@@ -54,7 +74,7 @@ const Failure = () => {
         </div>
 
         {/* Footer */}
-        <p className="mt-8 text-sm text-gray-400">
+        <p className="mt-8 text-sm text-gray-400 ">
           If money was deducted from your account, it will usually be
           refunded automatically according to your payment provider's
           policy.

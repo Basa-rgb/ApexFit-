@@ -3,6 +3,14 @@ const WorkoutPlan = require("../models/WorkoutPlan");
 const User = require("../models/User");
 const Trainer = require("../models/Trainer");
 
+// Trainer profiles are linked to accounts by matching email.
+const getOwnTrainerProfile = async (req) => {
+  if (req.user?.role !== "trainer") return null;
+  const account = await User.findById(req.user.id);
+  if (!account) return null;
+  return Trainer.findOne({ email: account.email });
+};
+
 
 // Create Workout Plan
 const createWorkoutPlan = async (req, res) => {
@@ -11,8 +19,15 @@ const createWorkoutPlan = async (req, res) => {
       userId,
       trainerId,
       title,
+      description,
+      image,
       goal,
+      difficulty,
       duration,
+      targetAudience,
+      daysPerWeek,
+      estimatedSessionTime,
+      equipment,
       exercises,
     } = req.body;
 
@@ -66,14 +81,32 @@ const createWorkoutPlan = async (req, res) => {
       });
     }
 
+    // Trainers can only publish plans under their own profile.
+    if (req.user?.role === "trainer") {
+      const own = await getOwnTrainerProfile(req);
+      if (!own || String(own._id) !== String(trainerId)) {
+        return res.status(403).json({
+          success: false,
+          message: "You can only create workout plans under your own trainer profile.",
+        });
+      }
+    }
+
 
     // Create Workout Plan
     const workoutPlan = await WorkoutPlan.create({
       userId,
       trainerId,
       title,
+      description,
+      image,
       goal,
+      difficulty,
       duration,
+      targetAudience,
+      daysPerWeek,
+      estimatedSessionTime,
+      equipment,
       exercises,
       status: "Active",
     });
@@ -203,32 +236,33 @@ const updateWorkoutPlanById = async (req, res) => {
       });
     }
 
+    // Trainers can only manage their own plans.
+    if (req.user?.role === "trainer") {
+      const own = await getOwnTrainerProfile(req);
+      if (!own || String(workoutPlan.trainerId) !== String(own._id)) {
+        return res.status(403).json({
+          success: false,
+          message: "You can only manage your own workout plans.",
+        });
+      }
+    }
+
 
     // Read request body
     const {
       title,
+      description,
+      image,
       goal,
+      difficulty,
       duration,
       exercises,
+      targetAudience,
+      daysPerWeek,
+      estimatedSessionTime,
+      equipment,
       status,
     } = req.body;
-
-
-    // Validate goal
-    if (
-      goal !== undefined &&
-      ![
-        "Weight Loss",
-        "Muscle Gain",
-        "Fitness",
-        "Strength",
-      ].includes(goal)
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid workout goal",
-      });
-    }
 
 
     // Validate status
@@ -252,6 +286,9 @@ const updateWorkoutPlanById = async (req, res) => {
       workoutPlan.title = title;
     }
 
+    if (description !== undefined) workoutPlan.description = description;
+    if (image !== undefined) workoutPlan.image = image;
+
     if (goal !== undefined) {
       workoutPlan.goal = goal;
     }
@@ -259,6 +296,14 @@ const updateWorkoutPlanById = async (req, res) => {
     if (duration !== undefined) {
       workoutPlan.duration = duration;
     }
+
+    if (difficulty !== undefined) workoutPlan.difficulty = difficulty;
+    if (targetAudience !== undefined) workoutPlan.targetAudience = targetAudience;
+    if (daysPerWeek !== undefined) workoutPlan.daysPerWeek = daysPerWeek;
+    if (estimatedSessionTime !== undefined) {
+      workoutPlan.estimatedSessionTime = estimatedSessionTime;
+    }
+    if (equipment !== undefined) workoutPlan.equipment = equipment;
 
     if (exercises !== undefined) {
       workoutPlan.exercises = exercises;
@@ -313,6 +358,17 @@ const deleteWorkoutPlanById = async (req, res) => {
         success: false,
         message: "Workout plan not found",
       });
+    }
+
+    // Trainers can only delete their own plans.
+    if (req.user?.role === "trainer") {
+      const own = await getOwnTrainerProfile(req);
+      if (!own || String(workoutPlan.trainerId) !== String(own._id)) {
+        return res.status(403).json({
+          success: false,
+          message: "You can only delete your own workout plans.",
+        });
+      }
     }
 
 

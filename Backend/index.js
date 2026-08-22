@@ -18,6 +18,9 @@ const dietRoutes = require("./Routes/dietRoutes")
 const contactRoutes = require("./Routes/contactRoutes");
 const blogRoutes =require("./Routes/blogRoutes");
 const galleryRoutes = require("./Routes/galleryRoutes");
+const newsletterRoutes = require("./Routes/newsletterRoutes");
+const faqRoutes = require("./Routes/faqRoutes");
+const reviewRoutes = require("./Routes/reviewRoutes");
 
 // Esewa Routes
 const esewaRoutes = require("./Routes/esewaRoutes");
@@ -86,6 +89,32 @@ app.use("/api/blog",blogRoutes)
 // Gallery Routes
 
 app.use("/api/gallery",galleryRoutes);
+
+
+// Newsletter Routes
+
+app.use("/api/newsletter", newsletterRoutes);
+
+// Public FAQ routes
+app.use("/api/faqs", faqRoutes);
+
+// Review routes
+
+app.use("/api/reviews", reviewRoutes);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const PORT = process.env.PORT || 5000;
 

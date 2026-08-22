@@ -20,21 +20,25 @@ const workoutPlanSchema = new mongoose.Schema(
       trim: true,
     },
 
+    description: { type: String, trim: true, default: "" },
+    image: { type: String, trim: true, default: "" },
+
     goal: {
       type: String,
-      enum: [
-        "Weight Loss",
-        "Muscle Gain",
-        "Fitness",
-        "Strength",
-      ],
       required: true,
     },
+
+    difficulty: { type: String, trim: true, default: "Beginner" },
 
     duration: {
       type: String,
       required: true,
     },
+
+    targetAudience: { type: String, trim: true, default: "All fitness levels" },
+    daysPerWeek: { type: Number, min: 1 },
+    estimatedSessionTime: { type: String, trim: true },
+    equipment: [{ type: String, trim: true }],
 
     exercises: [
       {
@@ -52,24 +56,22 @@ const workoutPlanSchema = new mongoose.Schema(
           type: Number,
           required: true,
         },
+        duration: String,
+        restTime: String,
+        instructions: String,
+        image: String,
       },
     ],
 
     status: {
       type: String,
-      enum: [
-        "Active",
-        "Completed",
-      ],
+      enum: ["Active", "Completed"],
       default: "Active",
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-module.exports = mongoose.model(
-  "WorkoutPlan",
-  workoutPlanSchema
-);
+module.exports = mongoose.model("WorkoutPlan", workoutPlanSchema);

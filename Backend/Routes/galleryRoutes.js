@@ -10,10 +10,11 @@ const {
 } = require("../controllers/galleryController");
 
 const { protect } = require("../middlewares/authMiddleware");
+const { isAdmin } = require("../middlewares/adminMiddleware");
 const upload = require("../middlewares/upload");
 
 // Create Gallery
-router.post("/", protect, upload.single("image"), createGallery);
+router.post("/", protect, isAdmin, upload.single("image"), createGallery);
 
 // Get All Gallery
 router.get("/", getAllGallery);
@@ -22,9 +23,9 @@ router.get("/", getAllGallery);
 router.get("/:id", getGalleryById);
 
 // Update Gallery
-router.put("/:id", protect, upload.single("image"), updateGallery);
+router.put("/:id", protect, isAdmin, upload.single("image"), updateGallery);
 
 // Delete Gallery
-router.delete("/:id", protect, deleteGallery);
+router.delete("/:id", protect, isAdmin, deleteGallery);
 
 module.exports = router;

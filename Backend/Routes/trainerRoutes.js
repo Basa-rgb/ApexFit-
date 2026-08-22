@@ -2,32 +2,34 @@ const express = require('express');
 const router = express.Router()
 
 const {protect} = require("../middlewares/authMiddleware");
+const {isAdmin} = require("../middlewares/adminMiddleware");
 const upload = require("../middlewares/upload");
-const {createTrainer, getAllTrainers, getTrainerById, updateTrainer , deleteTrainer} = require("../controllers/trainerController");
+const {createTrainer, getAllTrainers, getTrainerById, updateTrainer , deleteTrainer, updateMyTrainerProfile} = require("../controllers/trainerController");
 
 
 // Trainer Routes
 
+// Signed-in trainer updates their own profile
+router.put("/me", protect, upload.single("image"), updateMyTrainerProfile);
 
-
-// Create Trainer
-router.post("/", protect,  upload.single("image"), createTrainer);
+// Create Trainer (Admin only)
+router.post("/", protect, isAdmin, upload.single("image"), createTrainer);
 
 
 // Get All Trainers
-router.get("/", protect, getAllTrainers);
+router.get("/",  getAllTrainers);
 
 
 // Get Trainer by Id
 
-router.get("/:id" , protect , getTrainerById);
+router.get("/:id" ,  getTrainerById);
 
-// Update Trainer by id
+// Update Trainer by id (Admin only)
 
-router.put("/:id",protect ,  upload.single("image"), updateTrainer);
+router.put("/:id", protect, isAdmin, upload.single("image"), updateTrainer);
 
-//  Delete Trainer by id
+//  Delete Trainer by id (Admin only)
 
-router.delete("/:id" , protect , deleteTrainer );
+router.delete("/:id" , protect, isAdmin, deleteTrainer );
 
 module.exports = router;

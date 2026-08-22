@@ -8,7 +8,7 @@ import {
   Receipt,
 } from "lucide-react";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const API_BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:3000/api").replace(/\/?$/, "");
 
 const decodeEsewaData = (encodedData) => {
   const normalized = encodedData.replace(/-/g, "+").replace(/_/g, "/");
@@ -23,6 +23,7 @@ const decodeEsewaData = (encodedData) => {
 const Success = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,7 +43,7 @@ const Success = () => {
   const verifyPaymentAndUpdateStatus = useCallback(async () => {
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/esewa/payment-status`,
+        `${API_BASE_URL}/esewa/payment-status`,
         {
           data: token,
           product_id: decoded.transaction_uuid,
@@ -51,9 +52,15 @@ const Success = () => {
 
       if (response.data?.success) {
         setIsSuccess(true);
+      } else {
+        setErrorMessage(response.data?.message || "Payment is not complete yet.");
       }
     } catch (error) {
       console.error("Error confirming payment:", error);
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Could not reach the payment verifier. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -70,7 +77,7 @@ const Success = () => {
   // Loading UI
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-emerald-100 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-green-50 via-white to-emerald-100 px-4">
         <div className="bg-white rounded-3xl shadow-xl p-10 text-center max-w-sm w-full">
           <LoaderCircle className="animate-spin text-green-600 mx-auto" size={60} />
           <h2 className="mt-6 text-2xl font-semibold text-gray-800">
@@ -87,7 +94,7 @@ const Success = () => {
   // Error UI
   if (!isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 via-white to-rose-100 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-red-50 via-white to-rose-100 px-4">
         <div className="bg-white rounded-3xl shadow-xl p-10 text-center max-w-md w-full">
           <h1 className="text-3xl font-bold text-red-600">
             Verification Failed
@@ -98,6 +105,9 @@ const Success = () => {
             <br />
             Please contact support if the payment was deducted.
           </p>
+          {errorMessage && (
+            <p className="mt-3 text-sm text-red-500">{errorMessage}</p>
+          )}
 
           <button
             onClick={() => navigate("/")}
@@ -112,7 +122,7 @@ const Success = () => {
 
   // Success UI
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-100 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-emerald-100 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 sm:p-10 text-center">
 
         {/* Success Icon */}
@@ -134,7 +144,7 @@ const Success = () => {
         {/* Description */}
         <p className="mt-4 text-gray-500 leading-relaxed">
           Thank you! Your payment has been successfully completed.
-          Your membership is now active.
+          Your booking has been confirmed.
         </p>
 
         {/* Transaction ID */}

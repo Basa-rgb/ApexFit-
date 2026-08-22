@@ -14,6 +14,12 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
 
+    bookingOptionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "BookingOption",
+      required: true,
+    },
+
     bookingDate: {
       type: Date,
       required: true,
@@ -26,13 +32,25 @@ const bookingSchema = new mongoose.Schema(
 
     sessionType: {
       type: String,
-      enum: [
-        "Personal Training",
-        "Group Training",
-        "Diet Consultation",
-        "Fitness Assessment",
-      ],
       required: true,
+    },
+
+    amount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    paymentMethod: {
+      type: String,
+      enum: ["eSewa", "Cash"],
+      default: "eSewa",
+    },
+
+    paymentStatus: {
+      type: String,
+      enum: ["Pending", "Paid", "Failed"],
+      default: "Pending",
     },
 
     status: {

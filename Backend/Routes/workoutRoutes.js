@@ -10,26 +10,27 @@ const {
 } = require("../controllers/workoutController");
 
 const { protect } = require("../middlewares/authMiddleware");
+const { isAdmin, isTrainerOrAdmin } = require("../middlewares/adminMiddleware");
 
 
-// Create Workout Plan
-router.post("/", protect, createWorkoutPlan);
+// Create Workout Plan (admin or trainer)
+router.post("/", protect, isTrainerOrAdmin, createWorkoutPlan);
 
 
-// Get All Workout Plans
-router.get("/", protect, getAllWorkoutPlans);
+// Get All Workout Plans (public)
+router.get("/", getAllWorkoutPlans);
 
 
-// Get Workout Plan By ID
-router.get("/:id", protect, getWorkoutPlanById);
+// Get Workout Plan By ID (public)
+router.get("/:id", getWorkoutPlanById);
 
 
-// Update Workout Plan
-router.put("/:id", protect, updateWorkoutPlanById);
+// Update Workout Plan (admin or owning trainer)
+router.put("/:id", protect, isTrainerOrAdmin, updateWorkoutPlanById);
 
 
-// Delete Workout Plan
-router.delete("/:id", protect, deleteWorkoutPlanById);
+// Delete Workout Plan (admin or owning trainer)
+router.delete("/:id", protect, isTrainerOrAdmin, deleteWorkoutPlanById);
 
 
 module.exports = router;

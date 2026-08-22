@@ -13,10 +13,17 @@ const paymentSchema = new mongoose.Schema(
       default: null,
     },
 
+    bookingId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Booking",
+      default: null,
+    },
+
     membershipPlanId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "MembershipPlan",
-      required: true,
+      required: false,
+      default: null,
     },
 
     transactionUuid: {

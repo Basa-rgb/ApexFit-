@@ -1,10 +1,11 @@
 const crypto = require("crypto");
 const mongoose = require("mongoose");
-const { EsewaPaymentGateway, EsewaCheckStatus } = require("esewajs");
+const axios = require("axios");
 const Transaction = require("../models/Transaction");
 const Payment = require("../models/Payments");
 const MembershipPlan = require("../models/MembershipPlan");
 const MembershipSubscription = require("../models/MembershipSubscription");
+const Booking = require("../models/Bookings");
 
 const ESEWA_STATUSES = [
   "PENDING",
@@ -19,7 +20,7 @@ const ESEWA_STATUSES = [
 ];
 
 const generateTransactionUuid = () =>
-  `apexfit-${Date.now()}-${crypto.randomUUID()}`;
+  `apexfit-${Date.now()}-${crypto.randomBytes(5).toString("hex")}`;
 
 const addMonths = (date, months) => {
   const nextDate = new Date(date);
@@ -146,7 +147,72 @@ const createDemoPayment = ({ amount, productId }) => {
 
   return {
     amount: parsedAmount,
+    // eSewa only accepts alphanumeric characters and hyphens in this field.
     transactionUuid: productId || generateTransactionUuid(),
+  };
+};
+
+const createBookingPayment = async ({ bookingId, userId }) => {
+  if (!mongoose.Types.ObjectId.isValid(bookingId)) {
+    const error = new Error("Invalid booking ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const booking = await Booking.findOne({ _id: bookingId, userId });
+  if (!booking) {
+    const error = new Error("Booking not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (booking.paymentMethod !== "eSewa") {
+    const error = new Error("This booking is not configured for eSewa.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (booking.paymentStatus === "Paid") {
+    const error = new Error("This booking has already been paid.");
+    error.statusCode = 409;
+    throw error;
+  }
+
+  const transactionUuid = generateTransactionUuid();
+  const payment = await Payment.create({
+    userId,
+    bookingId: booking._id,
+    transactionUuid,
+    amount: booking.amount,
+    paymentMethod: "eSewa",
+    status: "Pending",
+  });
+
+  return { amount: booking.amount, transactionUuid, payment, booking };
+};
+
+const createEsewaFormData = ({ amount, transactionUuid }) => {
+  const productCode = process.env.MERCHANT_ID;
+  const totalAmount = Number(amount);
+  const signedFieldNames = "total_amount,transaction_uuid,product_code";
+  const signedData = `total_amount=${totalAmount},transaction_uuid=${transactionUuid},product_code=${productCode}`;
+  const signature = crypto
+    .createHmac("sha256", process.env.SECRET)
+    .update(signedData)
+    .digest("base64");
+
+  return {
+    amount: String(totalAmount),
+    failure_url: process.env.FAILURE_URL,
+    product_delivery_charge: "0",
+    product_service_charge: "0",
+    product_code: productCode,
+    signature,
+    signed_field_names: signedFieldNames,
+    success_url: process.env.SUCCESS_URL,
+    tax_amount: "0",
+    total_amount: String(totalAmount),
+    transaction_uuid: transactionUuid,
   };
 };
 
@@ -155,7 +221,7 @@ const EsewaInitiatePayment = async (req, res) => {
   let subscription;
 
   try {
-    const { membershipPlanId, amount, productId } = req.body;
+    const { membershipPlanId, bookingId, amount, productId } = req.body;
 
     if (membershipPlanId && !req.user?.id) {
       return res.status(401).json({
@@ -164,34 +230,39 @@ const EsewaInitiatePayment = async (req, res) => {
       });
     }
 
+    if (bookingId && !req.user?.id) {
+      return res.status(401).json({
+        success: false,
+        message: "Login is required before paying for a booking.",
+      });
+    }
+
     const paymentRequest = membershipPlanId
       ? await createMembershipPayment({
           membershipPlanId,
           userId: req.user?.id,
         })
+      : bookingId
+        ? await createBookingPayment({ bookingId, userId: req.user.id })
       : createDemoPayment({ amount, productId });
 
     payment = paymentRequest.payment;
     subscription = paymentRequest.subscription;
 
-    const reqPayment = await EsewaPaymentGateway(
-      paymentRequest.amount,
-      0,
-      0,
-      0,
-      paymentRequest.transactionUuid,
-      process.env.MERCHANT_ID,
-      process.env.SECRET,
-      process.env.SUCCESS_URL,
-      process.env.FAILURE_URL,
-      process.env.ESEWAPAYMENT_URL,
-      undefined,
-      undefined,
-    );
-
-    if (reqPayment?.status !== 200) {
-      throw new Error("Could not create eSewa checkout session.");
+    if (
+      !process.env.MERCHANT_ID ||
+      !process.env.SECRET ||
+      !process.env.ESEWAPAYMENT_URL ||
+      !process.env.SUCCESS_URL ||
+      !process.env.FAILURE_URL
+    ) {
+      throw new Error("eSewa merchant credentials are not configured.");
     }
+
+    const formData = createEsewaFormData({
+      amount: paymentRequest.amount,
+      transactionUuid: paymentRequest.transactionUuid,
+    });
 
     await Transaction.create({
       product_id: paymentRequest.transactionUuid,
@@ -202,7 +273,8 @@ const EsewaInitiatePayment = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      url: reqPayment.request.res.responseUrl,
+      gatewayUrl: process.env.ESEWAPAYMENT_URL,
+      formData,
       transactionUuid: paymentRequest.transactionUuid,
     });
   } catch (error) {
@@ -290,11 +362,15 @@ const paymentStatus = async (req, res) => {
     }
 
     const amount = payment?.amount || transaction.amount;
-    const paymentStatusCheck = await EsewaCheckStatus(
-      amount,
-      transactionUuid,
-      process.env.MERCHANT_ID,
+    const paymentStatusCheck = await axios.get(
       process.env.ESEWAPAYMENT_STATUS_CHECK_URL,
+      {
+        params: {
+          product_code: process.env.MERCHANT_ID,
+          total_amount: amount,
+          transaction_uuid: transactionUuid,
+        },
+      },
     );
 
     const gatewayStatus = normalizeGatewayStatus(
@@ -336,6 +412,16 @@ const paymentStatus = async (req, res) => {
       }
 
       await payment.save({ validateBeforeSave: false });
+
+      if (payment.bookingId) {
+        const booking = await Booking.findById(payment.bookingId);
+        if (booking) {
+          booking.paymentStatus =
+            gatewayStatus === "COMPLETE" ? "Paid" : payment.status === "Failed" ? "Failed" : "Pending";
+          if (gatewayStatus === "COMPLETE") booking.status = "Confirmed";
+          await booking.save({ validateBeforeSave: false });
+        }
+      }
     }
 
     return res.status(200).json({

@@ -10,20 +10,21 @@ const {
 } = require("../controllers/contactController");
 
 const { protect } = require("../middlewares/authMiddleware");
+const { isAdmin } = require("../middlewares/adminMiddleware");
 
 // Create Contact (Public)
 router.post("/", createContact);
 
-// Get All Contacts
-router.get("/", protect, getAllContacts);
+// Get All Contacts (Admin only)
+router.get("/", protect, isAdmin, getAllContacts);
 
-// Get Contact By ID
-router.get("/:id", protect, getContactById);
+// Get Contact By ID (Admin only)
+router.get("/:id", protect, isAdmin, getContactById);
 
-// Update Contact
-router.put("/:id", protect, updateContactById);
+// Update Contact (Admin only)
+router.put("/:id", protect, isAdmin, updateContactById);
 
-// Delete Contact
-router.delete("/:id", protect, deleteContactById);
+// Delete Contact (Admin only)
+router.delete("/:id", protect, isAdmin, deleteContactById);
 
 module.exports = router;

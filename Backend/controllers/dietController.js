@@ -3,8 +3,53 @@ const DietPlan = require("../models/DietPlan");
 const User = require("../models/User");
 const Trainer = require("../models/Trainer");
 
+// Trainer profiles are linked to accounts by matching email.
+const getOwnTrainerProfile = async (req) => {
+  if (req.user?.role !== "trainer") return null;
+  const account = await User.findById(req.user.id);
+  if (!account) return null;
+  return Trainer.findOne({ email: account.email });
+};
+
 
 // Create Diet Plan
+const DIET_MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snacks"];
+
+// Meal types are an enum in the schema — accept any casing and validate up front
+// so members' trainers get a helpful 400 instead of a blank 500.
+const normalizeMeals = (rawMeals) =>
+  (Array.isArray(rawMeals) ? rawMeals : [])
+    .map((meal) => {
+      const rawType = String(meal?.mealType || "").trim().toLowerCase();
+      const matchedType = DIET_MEAL_TYPES.find((type) => type.toLowerCase() === rawType) || null;
+      return {
+        mealType: matchedType || String(meal?.mealType || "").trim(),
+        foodItems: (meal?.foodItems || []).map((item) => String(item).trim()).filter(Boolean),
+        calories: Number(meal?.calories) || 0,
+      };
+    });
+
+const mealsValidationError = (meals) => {
+  if (!meals.length) return "Add at least one meal.";
+  const invalid = meals.find((meal) => !DIET_MEAL_TYPES.includes(meal.mealType));
+  if (invalid) {
+    return `Meal type "${invalid.mealType}" is not allowed. Use one of: ${DIET_MEAL_TYPES.join(", ")}.`;
+  }
+  const incomplete = meals.find((meal) => !meal.foodItems.length);
+  if (incomplete) return `The ${incomplete.mealType} meal needs at least one food item.`;
+  return null;
+};
+
+const validationErrorResponse = (res, error) => {
+  if (error?.name === "ValidationError") {
+    const details = Object.values(error.errors || {})
+      .map((issue) => issue.message)
+      .join(", ");
+    return res.status(400).json({ success: false, message: details || "Invalid plan data." });
+  }
+  return null;
+};
+
 const createDietPlan = async (req, res) => {
   try {
     console.log("Headers:", req.headers["content-type"]);
@@ -68,6 +113,22 @@ const createDietPlan = async (req, res) => {
       });
     }
 
+    // Trainers can only publish plans under their own profile.
+    if (req.user?.role === "trainer") {
+      const own = await getOwnTrainerProfile(req);
+      if (!own || String(own._id) !== String(trainerId)) {
+        return res.status(403).json({
+          success: false,
+          message: "You can only create diet plans under your own trainer profile.",
+        });
+      }
+    }
+
+    const normalizedMeals = normalizeMeals(meals);
+    const mealsError = mealsValidationError(normalizedMeals);
+    if (mealsError) {
+      return res.status(400).json({ success: false, message: mealsError });
+    }
 
     // Create Diet Plan
 
@@ -77,7 +138,7 @@ const createDietPlan = async (req, res) => {
       title,
       goal,
       duration,
-      meals,
+      meals: normalizedMeals,
     });
 
 
@@ -91,6 +152,9 @@ const createDietPlan = async (req, res) => {
   } catch (error) {
 
     console.log("Create Diet Plan Error:", error);
+
+    const validationResponse = validationErrorResponse(res, error);
+    if (validationResponse) return validationResponse;
 
     return res.status(500).json({
       success: false,
@@ -106,7 +170,7 @@ const getAllDietPlans = async (req, res) => {
 
     const dietPlans = await DietPlan.find()
       .populate("userId", "fullName email")
-      .populate("trainerId", "name email");
+      .populate("trainerId", "fullName email");
 
 
     if (dietPlans.length === 0) {
@@ -153,7 +217,7 @@ const getDietPlanById = async (req, res) => {
     // Find diet plan
     const dietPlan = await DietPlan.findById(req.params.id)
       .populate("userId", "fullName email")
-      .populate("trainerId", "name email");
+      .populate("trainerId", "fullName email");
 
 
     if (!dietPlan) {
@@ -205,6 +269,17 @@ const updateDietPlanById = async (req, res) => {
         success: false,
         message: "Diet plan not found",
       });
+    }
+
+    // Trainers can only manage their own plans.
+    if (req.user?.role === "trainer") {
+      const own = await getOwnTrainerProfile(req);
+      if (!own || String(dietPlan.trainerId) !== String(own._id)) {
+        return res.status(403).json({
+          success: false,
+          message: "You can only manage your own diet plans.",
+        });
+      }
     }
 
 
@@ -286,6 +361,9 @@ const updateDietPlanById = async (req, res) => {
 
     console.log("Update Diet Plan Error:", error);
 
+    const validationResponse = validationErrorResponse(res, error);
+    if (validationResponse) return validationResponse;
+
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -317,6 +395,17 @@ const deleteDietPlanById = async (req, res) => {
         success: false,
         message: "Diet plan not found",
       });
+    }
+
+    // Trainers can only delete their own plans.
+    if (req.user?.role === "trainer") {
+      const own = await getOwnTrainerProfile(req);
+      if (!own || String(dietPlan.trainerId) !== String(own._id)) {
+        return res.status(403).json({
+          success: false,
+          message: "You can only delete your own diet plans.",
+        });
+      }
     }
 
 

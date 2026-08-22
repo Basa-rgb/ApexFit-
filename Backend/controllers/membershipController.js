@@ -66,7 +66,7 @@ const createMembershipPlan = async (req, res) => {
 
 const getAllMembershipPlans = async (req, res) => {
   try {
-    const plans = await MembershipPlan.find();
+    const plans = await MembershipPlan.find({ isActive: true });
 
     // find plans exits or not
     if (plans.length === 0) {

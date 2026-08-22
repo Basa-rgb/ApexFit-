@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middlewares/authMiddleware");
+const { isAdmin } = require("../middlewares/adminMiddleware");
 const {
   createMembershipPlan,
   getAllMembershipPlans,
@@ -9,25 +10,25 @@ const {
   deleteMembershipPlan
 } = require("../controllers/membershipController");
 
-// create membership plan
-router.post("/", protect, createMembershipPlan);
+// create membership plan (Admin only)
+router.post("/", protect, isAdmin, createMembershipPlan);
 
-// get all membership plan
+// get all membership plans (public so visitors can browse plans)
 
-router.get("/", protect, getAllMembershipPlans);
+router.get("/", getAllMembershipPlans);
 
 
-// get all membership plan by Id
+// get membership plan by Id
 
-router.get("/:id", protect , getMembershipPlanById)
+router.get("/:id", getMembershipPlanById);
 
-//  update all membership plan by Id
+// update membership plan by Id (Admin only)
 
-router.put("/:id",protect ,updateMembershipPlan);
+router.put("/:id", protect, isAdmin, updateMembershipPlan);
 
-// delete all membership plan by Id
+// delete membership plan by Id (Admin only)
 
-router.delete("/:id", protect ,deleteMembershipPlan);
+router.delete("/:id", protect, isAdmin, deleteMembershipPlan);
 
 
 

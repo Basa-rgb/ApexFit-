@@ -10,26 +10,27 @@ const {
 } = require("../controllers/dietController");
 
 const { protect } = require("../middlewares/authMiddleware");
+const { isAdmin, isTrainerOrAdmin } = require("../middlewares/adminMiddleware");
 
 
-// Create Diet Plan
-router.post("/", protect, createDietPlan);
+// Create Diet Plan (admin or trainer)
+router.post("/", protect, isTrainerOrAdmin, createDietPlan);
 
 
-// Get All Diet Plans
-router.get("/", protect, getAllDietPlans);
+// Get All Diet Plans (public)
+router.get("/", getAllDietPlans);
 
 
-// Get Single Diet Plan By ID
-router.get("/:id", protect, getDietPlanById);
+// Get Single Diet Plan By ID (public)
+router.get("/:id", getDietPlanById);
 
 
-// Update Diet Plan
-router.put("/:id", protect, updateDietPlanById);
+// Update Diet Plan (admin or owning trainer)
+router.put("/:id", protect, isTrainerOrAdmin, updateDietPlanById);
 
 
-// Delete Diet Plan
-router.delete("/:id", protect, deleteDietPlanById);
+// Delete Diet Plan (admin or owning trainer)
+router.delete("/:id", protect, isTrainerOrAdmin, deleteDietPlanById);
 
 
 module.exports = router;

@@ -7,16 +7,35 @@ import {
   LoaderCircle,
   ShieldCheck,
 } from "lucide-react";
+import { useLoginGate } from "../../Component/Common/LoginPrompt";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+const API_BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:3000/api").replace(/\/?$/, "");
 
 const generateProductId = () =>
   `apexfit-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+
+const submitEsewaForm = (gatewayUrl, formData) => {
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = gatewayUrl;
+
+  Object.entries(formData).forEach(([name, value]) => {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+};
 
 const PaymentForm = () => {
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
+  const { isLoggedIn, requireLogin, loginPrompt } = useLoginGate();
 
   const membershipPlanId =
     searchParams.get("membershipPlanId") || searchParams.get("planId");
@@ -25,17 +44,17 @@ const PaymentForm = () => {
   const handlePayment = async (e) => {
     e.preventDefault();
 
+    if (!isLoggedIn) {
+      requireLogin();
+      return;
+    }
+
     if (!isMembershipPayment && (!amount || Number(amount) <= 0)) {
       alert("Please enter a valid amount.");
       return;
     }
 
     const token = localStorage.getItem("token");
-
-    if (isMembershipPayment && !token) {
-      alert("Please login before buying a membership.");
-      return;
-    }
 
     try {
       setLoading(true);
@@ -48,18 +67,19 @@ const PaymentForm = () => {
           };
 
       const response = await axios.post(
-        `${API_BASE_URL}/api/esewa/initiate-payment`,
+        `${API_BASE_URL}/esewa/initiate-payment`,
         payload,
         {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         },
       );
 
-      if (!response.data?.url) {
-        throw new Error("Payment URL was not returned.");
+      if (!response.data?.gatewayUrl || !response.data?.formData) {
+        throw new Error("eSewa payment details were not returned.");
       }
 
-      window.location.href = response.data.url;
+      // eSewa requires the customer's browser to POST the signed form data.
+      submitEsewaForm(response.data.gatewayUrl, response.data.formData);
     } catch (error) {
       console.error("Error initiating payment:", error);
       alert(
@@ -71,7 +91,7 @@ const PaymentForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-100 flex items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-emerald-100 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
 
         {/* Header */}
@@ -168,6 +188,9 @@ const PaymentForm = () => {
           </p>
         </form>
       </div>
+
+      {/* Popup when a guest somehow reaches the payment page. */}
+      {loginPrompt}
     </div>
   );
 };

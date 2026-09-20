@@ -1,6 +1,7 @@
 import React from 'react'
 import AboutImg from "../../../assets/images/about.png";
-import { Dumbbell, Link, Trophy, Users } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Dumbbell, Trophy, Users } from "lucide-react";
 const AboutSection = () => {
     return (
         <section className='bg-[#F2F2F2]'>

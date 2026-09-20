@@ -67,9 +67,9 @@ export default function LoginForm() {
    };
 
    return (
-      <main className="md:min-h-screen flex items-center justify-center py-4 px-4 md:px-8">
+      <main className="min-h-dvh flex flex-col px-3 py-6 sm:px-4 md:px-8">
          <div
-            className="w-full max-w-5xl bg-white [box-shadow:0_2px_10px_-3px_rgba(14,14,14,0.3)] rounded-2xl overflow-hidden dark:bg-neutral-800">
+            className="m-auto w-full max-w-5xl bg-white [box-shadow:0_2px_10px_-3px_rgba(14,14,14,0.3)] rounded-2xl overflow-hidden dark:bg-neutral-800">
             <div className="grid items-center w-full gap-4 lg:grid-cols-2">
                <div
                   className=" hidden lg:block lg:aspect-[8/10] bg-gray-50 relative before:absolute before:inset-0 before:bg-black/40 overflow-hidden w-full h-full">
@@ -83,9 +83,9 @@ export default function LoginForm() {
                   </div>
                </div>
 
-               <div className="py-6 px-6 lg:px-8 max-lg:-order-1">
+               <div className="py-8 px-5 sm:px-6 lg:px-8 max-lg:-order-1">
                   <div className="max-w-md mx-auto w-full">
-                     <h1 className="text-slate-900 text-3xl font-bold mb-8 dark:text-slate-50 flex justify-center items-center font-serif">
+                     <h1 className="text-slate-900 text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 dark:text-slate-50 flex justify-center items-center font-serif">
                         Login / Sign in
                      </h1>
 
@@ -99,7 +99,7 @@ export default function LoginForm() {
                                  ...formData,
                                  email: e.target.value
                               })}
-                              className="px-3 py-2.5 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 dark:text-slate-50 dark:bg-neutral-700 dark:outline-neutral-600" />
+                              className="px-3.5 py-3 sm:py-2.5 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 dark:text-slate-50 dark:bg-neutral-700 dark:outline-neutral-600" />
                         </div>
 
                         <div>
@@ -117,7 +117,7 @@ export default function LoginForm() {
                                     ...formData,
                                     password: e.target.value
                                  })}
-                                 className="px-3 py-2.5 pr-10 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 dark:text-slate-50 dark:bg-neutral-700 dark:outline-neutral-600"
+                                 className="px-3.5 py-3 sm:py-2.5 pr-10 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 dark:text-slate-50 dark:bg-neutral-700 dark:outline-neutral-600"
                                  required
                               />
 
@@ -147,9 +147,9 @@ export default function LoginForm() {
                            </div>
                         </div>
 
-                        <div className="flex items-start flex-wrap gap-2">
+                        <div className="flex items-center justify-between flex-wrap gap-x-4 gap-y-3">
                            <label className="flex items-center group has-[input:checked]:text-slate-900">
-                              <input id="remember" name="remember" type="checkbox"  className="sr-only" required />
+                              <input id="remember" name="remember" type="checkbox" className="sr-only" />
                               {/* Custom box */}
                               <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded outline-1 outline-slate-300 dark:outline-neutral-600
                            bg-white dark:bg-neutral-700
@@ -169,23 +169,23 @@ export default function LoginForm() {
                            </label>
 
                            <a href="/forgot-password"
-                              className="ml-auto text-sm font-medium text-blue-700 dark:text-blue-500 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
+                              className="text-sm font-medium text-blue-700 dark:text-blue-500 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
                               Forgot password?
                            </a>
                         </div>
                         <button type="submit"
                            disabled={isSubmitting || !formData.email.trim() || !formData.password.trim()}
-                           className="w-full py-2 px-3.5 text-sm rounded-md font-semibold  text-white border border-blue-600 bg-blue-600 hover:bg-blue-700 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 font-mono cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                           className="w-full py-3 px-3.5 text-sm rounded-md font-semibold text-white border border-blue-600 bg-blue-600 hover:bg-blue-700 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 font-mono cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
                            {isSubmitting ? "Redirecting" : "Sign in"}</button>
                      </form>
 
-                     <div className="my-8 flex items-center gap-4">
+                     <div className="my-6 sm:my-8 flex items-center gap-4">
                         <hr className="w-full border-slate-300 dark:border-neutral-700" />
                         <p className="text-sm text-slate-700 text-center dark:text-slate-300">or</p>
                         <hr className="w-full border-slate-300 dark:border-neutral-700" />
                      </div>
 
-                     <div className="flex justify-center bg-white dark:bg-neutral-800">
+                     <div className="flex justify-center min-w-0 bg-white dark:bg-neutral-800">
                         <GoogleLogin
                            onSuccess={handleGoogleSuccess}
                            onError={() => {
@@ -194,7 +194,7 @@ export default function LoginForm() {
                         />
                      </div>
 
-                     <div className="mt-6 text-slate-900 text-sm text-center dark:text-slate-50">Don't have an account? <Link to="/register" state={{ from: location.state?.from }}
+                     <div className="mt-6 pb-1 text-slate-900 text-sm text-center leading-relaxed dark:text-slate-50">Don't have an account? <Link to="/register" state={{ from: location.state?.from }}
                         className="text-blue-700 hover:underline ml-1 font-medium dark:text-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">Sign
                         up</Link>
                      </div>

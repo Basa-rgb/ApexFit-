@@ -53,8 +53,8 @@ const AppRoutes = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/payment-form" element={<ProtectedRoute><PaymentForm /></ProtectedRoute>} />
-      <Route path="/payment-success" element={<PaymentSuccess />} />
-      <Route path="/payment-failed" element={<PaymentFailed />} />
+      <Route path="/payment-success" element={<ProtectedRoute><PaymentSuccess /></ProtectedRoute>} />
+      <Route path="/payment-failed" element={<ProtectedRoute><PaymentFailed /></ProtectedRoute>} />
       <Route path= "/trainers/:id" element ={<TrainerProfile />}/>
       <Route path="/membership" element ={<Membership />} />
       {/* Booking requires an account — you cannot book a session without logging in. */}

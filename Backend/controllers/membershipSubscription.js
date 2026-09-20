@@ -113,7 +113,7 @@ const getAllSubscriptions = async (req, res) => {
       success: true,
       count: subscriptions.length,
       message: "Membership subscriptions retrieved successfully.",
-      data: subscriptions,
+      subscriptions,
     });
   } catch (error) {
     console.error("Error retrieving membership subscriptions:", error);

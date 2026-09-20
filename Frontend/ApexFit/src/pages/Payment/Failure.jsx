@@ -1,7 +1,7 @@
 import React from "react";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { XCircle, RefreshCcw, Home } from "lucide-react";
+import api from "../../api/axios";
 
 const Failure = () => {
   const navigate = useNavigate();
@@ -14,8 +14,7 @@ const Failure = () => {
     try {
       const decoded = JSON.parse(atob(data.replace(/-/g, "+").replace(/_/g, "/")));
       if (decoded?.transaction_uuid) {
-        const apiBase = (import.meta.env.VITE_API_URL || "http://localhost:3000/api").replace(/\/?$/, "");
-        axios.post(`${apiBase}/esewa/payment-status`, {
+        api.post("/esewa/payment-status", {
           data,
           product_id: decoded.transaction_uuid,
         }).catch((error) => console.error("Could not record failed payment:", error));

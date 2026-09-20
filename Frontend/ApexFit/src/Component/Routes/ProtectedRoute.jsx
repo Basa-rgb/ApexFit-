@@ -1,14 +1,32 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { getSession } from "../../utils/auth";
 
-// Protect private pages using the token and user role saved at login.
+// Client-side protection keeps private screens out of the UI. The API verifies
+// the bearer token and role again, so browser storage is never the authority.
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const location = useLocation();
-  const token = localStorage.getItem("token");
-  const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  const session = getSession();
 
-  if (!token) return <Navigate to="/login" replace state={{ from: location }} />;
-  if (adminOnly && storedUser?.role !== "admin") return <Navigate to="/dashboard" replace />;
+  if (!session) {
+    return (
+      <Navigate
+        to="/login"
+        replace
+        state={{
+          from: {
+            pathname: location.pathname,
+            search: location.search,
+            hash: location.hash,
+          },
+        }}
+      />
+    );
+  }
+
+  if (adminOnly && session.user.role !== "admin") {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return children;
 };

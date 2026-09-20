@@ -21,7 +21,7 @@ const AdminSubscriptions = () => {
   const load = async () => {
     try {
       const response = await getAllSubscriptions();
-      setSubscriptions(response.data?.subscriptions || []);
+      setSubscriptions(response.data?.subscriptions || response.data?.data || []);
       setError("");
     } catch (requestError) {
       setError(requestError.response?.data?.message || "Could not load subscriptions.");

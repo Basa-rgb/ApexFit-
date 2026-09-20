@@ -9,7 +9,7 @@ const createPayment = async (req, res) => {
   try {
     const { subscriptionId, membershipPlanId, amount, paymentMethod } =
       req.body;
-    const userId = req.user?.id || req.body.userId;
+    const userId = req.user.id;
 
     // Check required fields
     if (
@@ -54,6 +54,20 @@ const createPayment = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Subscription not found",
+      });
+    }
+
+    if (String(subscription.userId) !== String(userId)) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only create a payment for your own subscription.",
+      });
+    }
+
+    if (String(subscription.membershipPlanId) !== String(membershipPlanId)) {
+      return res.status(400).json({
+        success: false,
+        message: "The subscription does not match the selected membership plan.",
       });
     }
 

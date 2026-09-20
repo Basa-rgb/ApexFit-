@@ -7,6 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "seed:admin": "node scripts/seedAdmin.js",
+    "seed:demo": "node scripts/seedDemoData.js",
+    "seed:membership-plans": "node scripts/seedMembershipPlans.js",
     "seed:booking-options": "node scripts/seedBookingOptions.js",
     "migrate:booking-option-indexes": "node scripts/migrateBookingOptionIndexes.js",
     "migrate:trainer-ids": "node scripts/migrateTrainerIds.js"

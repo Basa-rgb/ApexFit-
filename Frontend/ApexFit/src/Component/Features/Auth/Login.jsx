@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import loginImg from "../../../assets/images/login.png";
 import { login, googleAuth } from "../../../api/auth.api";
 import { GoogleLogin } from "@react-oauth/google";
-import { useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { getPostLoginPath, saveSession } from "../../../utils/auth";
 export default function LoginForm() {
    const [isVisible, setIsVisible] = useState(false);
 
@@ -13,6 +14,12 @@ export default function LoginForm() {
    })
 
    const navigate = useNavigate()
+   const location = useLocation();
+
+   const finishLogin = (response) => {
+      saveSession(response.data);
+      navigate(getPostLoginPath(response.data.user, location.state?.from), { replace: true });
+   };
    const toggleVisibility = () => {
       setIsVisible((prevState) => !prevState);
    };
@@ -21,9 +28,7 @@ export default function LoginForm() {
       setIsSubmitting(true);
       try {
          const response = await googleAuth({ credential: credentialResponse.credential });
-         localStorage.setItem("token", response.data.token);
-         localStorage.setItem("user", JSON.stringify(response.data.user));
-         navigate(response.data.user?.role === "admin" ? "/admin/dashboard" : "/dashboard");
+         finishLogin(response);
       } catch (error) {
          console.log(error);
          alert(error.response?.data?.message || "Google login failed");
@@ -52,9 +57,7 @@ export default function LoginForm() {
       try {
          const response = await login(formData);
          console.log(response.data);
-         localStorage.setItem("token", response.data.token);
-         localStorage.setItem("user", JSON.stringify(response.data.user));
-         navigate(response.data.user?.role === "admin" ? "/admin/dashboard" : "/dashboard");
+         finishLogin(response);
       } catch (error) {
          console.log(error);
          alert(error.response?.data?.message || "Login failed");
@@ -191,9 +194,9 @@ export default function LoginForm() {
                         />
                      </div>
 
-                     <div className="mt-6 text-slate-900 text-sm text-center dark:text-slate-50">Don't have an account? <a href="/register"
+                     <div className="mt-6 text-slate-900 text-sm text-center dark:text-slate-50">Don't have an account? <Link to="/register" state={{ from: location.state?.from }}
                         className="text-blue-700 hover:underline ml-1 font-medium dark:text-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">Sign
-                        up</a>
+                        up</Link>
                      </div>
                   </div>
                </div>

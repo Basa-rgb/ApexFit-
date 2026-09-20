@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import {
   Wallet,
@@ -8,8 +7,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useLoginGate } from "../../Component/Common/LoginPrompt";
-
-const API_BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:3000/api").replace(/\/?$/, "");
+import api from "../../api/axios";
 
 const generateProductId = () =>
   `apexfit-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
@@ -54,8 +52,6 @@ const PaymentForm = () => {
       return;
     }
 
-    const token = localStorage.getItem("token");
-
     try {
       setLoading(true);
 
@@ -66,12 +62,9 @@ const PaymentForm = () => {
             productId: generateProductId(),
           };
 
-      const response = await axios.post(
-        `${API_BASE_URL}/esewa/initiate-payment`,
+      const response = await api.post(
+        "/esewa/initiate-payment",
         payload,
-        {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        },
       );
 
       if (!response.data?.gatewayUrl || !response.data?.formData) {

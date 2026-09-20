@@ -134,12 +134,56 @@ cd Frontend/ApexFit
 npm run dev
 ```
 
+## Admin Quick Start
+
+Use these steps once to prepare an administrator account for a local demo.
+
+1. In MongoDB Atlas, create the database user used in `MONGOOSE_URL` and add your current public IP address under **Security → Network Access**. Atlas must allow the machine running the backend to connect.
+2. In `Backend/.env`, set real values for the minimum admin-login configuration:
+
+```env
+MONGOOSE_URL=mongodb+srv://<database-user>:<url-encoded-password>@<cluster>/<database-name>?retryWrites=true&w=majority
+JWT_SECRET=<a-long-random-secret>
+CLIENT_URL=http://localhost:5173
+ADMIN_EMAIL=<the-email-you-will-use-to-log-in>
+ADMIN_PASSWORD=<a-long-unique-password>
+```
+
+3. Create (or reset) the configured account as an active, verified admin:
+
+```bash
+cd Backend
+npm run seed:admin
+```
+
+4. Load the three demo-ready membership packages (Starter Fit, Progress Plus, and Apex Elite):
+
+```bash
+npm run seed:membership-plans
+```
+
+For a full project demonstration instead, run the one-command seed below. It adds sample members, trainer profiles, memberships, bookings, payments, workout plans, diet plans, blogs, gallery entries, FAQs, reviews, contacts, and newsletter subscribers.
+
+```bash
+npm run seed:demo
+```
+
+5. Start the backend and frontend, then open `http://localhost:5173/login`.
+6. Sign in with `ADMIN_EMAIL` and `ADMIN_PASSWORD`. ApexFit redirects admins to `/admin/dashboard` automatically.
+
+`seed:admin` is safe to run again: it updates the configured email to an active, verified admin and resets its password to `ADMIN_PASSWORD`.
+
+For the complete app, also configure the email, Google OAuth, Cloudinary, and eSewa values in `Backend/.env`. These are not required merely to open the admin dashboard, but the corresponding features will not work until their values are set.
+
 ## Available Scripts
 
 | Location | Script | Description |
 |---|---|---|
 | Backend | `npm run dev` | Start API with nodemon |
 | Backend | `npm start` | Start API in production mode |
+| Backend | `npm run seed:admin` | Create or update the configured admin account |
+| Backend | `npm run seed:demo` | Load full demo content for every admin area |
+| Backend | `npm run seed:membership-plans` | Add or refresh demo membership packages |
 | Backend | `npm run seed:booking-options` | Seed sample booking options |
 | Backend | `npm run migrate:booking-option-indexes` | Migrate booking option indexes |
 | Backend | `npm run migrate:trainer-ids` | Migrate legacy trainer references |

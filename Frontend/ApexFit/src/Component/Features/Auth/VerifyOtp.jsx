@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import { ShieldCheck } from 'lucide-react'
 import { resendRegistrationOtp, verifyOtp } from "../../../api/auth.api";
 import { useNavigate, useLocation } from 'react-router-dom';
+import { getPostLoginPath, saveSession } from "../../../utils/auth";
 
 const VerifyOtp = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -49,11 +50,10 @@ const VerifyOtp = () => {
     setIsVerifying(true)
     try {
       const res = await verifyOtp({ email, otp: code });
-      localStorage.setItem("token", res.data.token);
-      if (res.data.user) localStorage.setItem("user", JSON.stringify(res.data.user));
+      saveSession(res.data);
       localStorage.removeItem("pendingEmail");
       alert(res.data.message || "Account verified successfully.");
-      navigate(res.data.user?.role === "admin" ? "/admin/dashboard" : "/dashboard", { replace: true });
+      navigate(getPostLoginPath(res.data.user, location.state?.from), { replace: true });
     } catch (error) {
       const message =
         error.code === "ECONNABORTED"

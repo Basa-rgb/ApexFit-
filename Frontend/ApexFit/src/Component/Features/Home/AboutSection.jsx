@@ -1,6 +1,6 @@
 import React from 'react'
 import AboutImg from "../../../assets/images/about.png";
-import { Dumbbell, Trophy, Users } from "lucide-react";
+import { Dumbbell, Link, Trophy, Users } from "lucide-react";
 const AboutSection = () => {
     return (
         <section className='bg-[#F2F2F2]'>
@@ -45,8 +45,8 @@ const AboutSection = () => {
 
                         {/* Button  */}
                         <div className='flex justify-center items-center p-4'>
-                            <a href=""
-                                className='inline-block bg-[#26263A] text-white border-2 border-[#26253A] px-7 sm:px-10 py-3 font-serif tracking-wider text-lg transition-all duration-300 hover:bg-white hover:text-black '>LEARN MORE</a>
+                            <Link to="/blogs"
+                                className='inline-block bg-[#26263A] text-white border-2 border-[#26253A] px-7 sm:px-10 py-3 font-serif tracking-wider text-lg transition-all duration-300 hover:bg-white hover:text-black '>LEARN MORE</Link>
                         </div>
 
                     </div>

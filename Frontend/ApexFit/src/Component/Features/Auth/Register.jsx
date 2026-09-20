@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { register, googleAuth } from "../../../api/auth.api";
 import RegisterImg from "../../../assets/images/register.png";
 import { GoogleLogin } from "@react-oauth/google";
+import { getPostLoginPath, saveSession } from "../../../utils/auth";
 export default function RegisterForm() {
     const [isVisible, setIsVisible] = useState(false);
     const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ export default function RegisterForm() {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const toggleVisibility = () => {
         setIsVisible((prevState) => !prevState);
@@ -22,9 +24,8 @@ export default function RegisterForm() {
         setIsSubmitting(true);
         try {
             const response = await googleAuth({ credential: credentialResponse.credential });
-            localStorage.setItem("token", response.data.token);
-            localStorage.setItem("user", JSON.stringify(response.data.user));
-            navigate(response.data.user?.role === "admin" ? "/admin/dashboard" : "/dashboard");
+            saveSession(response.data);
+            navigate(getPostLoginPath(response.data.user, location.state?.from), { replace: true });
         } catch (error) {
             console.log(error);
             alert(error.response?.data?.message || "Google sign-up failed");
@@ -62,7 +63,7 @@ export default function RegisterForm() {
             // Save email so VerifyOtp page can access it even after refresh
             localStorage.setItem("pendingEmail", formData.email)
             // Navigate to verify OTP page
-            navigate("/verify-otp");
+            navigate("/verify-otp", { state: { from: location.state?.from } });
         } catch (error) {
             console.log(error);
             const message =
@@ -212,6 +213,7 @@ export default function RegisterForm() {
                                 Already have an account?
                                 <Link
                                     to="/login"
+                                    state={{ from: location.state?.from }}
                                     className="text-blue-700 hover:underline ml-1 font-medium dark:text-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
                                     Sign in
                                 </Link>

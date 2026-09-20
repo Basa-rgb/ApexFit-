@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axios";
 import {
   CheckCircle2,
   Home,
   LoaderCircle,
   Receipt,
 } from "lucide-react";
-
-  const API_BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:3000/api").replace(/\/?$/, "");
 
 const decodeEsewaData = (encodedData) => {
   const normalized = encodedData.replace(/-/g, "+").replace(/_/g, "/");
@@ -42,13 +40,12 @@ const Success = () => {
 
   const verifyPaymentAndUpdateStatus = useCallback(async () => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/esewa/payment-status`,
+      const response = await api.post(
+        "/esewa/payment-status",
         {
           data: token,
           product_id: decoded.transaction_uuid,
         },
-        { timeout: 30000 }
       );
 
       if (response.data?.success) {

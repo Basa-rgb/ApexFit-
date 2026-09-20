@@ -361,6 +361,17 @@ const paymentStatus = async (req, res) => {
       });
     }
 
+    if (
+      payment &&
+      String(payment.userId) !== String(req.user.id) &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "You cannot verify another member's payment.",
+      });
+    }
+
     const amount = payment?.amount || transaction.amount;
     const paymentStatusCheck = await axios.get(
       process.env.ESEWAPAYMENT_STATUS_CHECK_URL,
